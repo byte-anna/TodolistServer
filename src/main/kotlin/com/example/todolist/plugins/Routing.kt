@@ -1,5 +1,7 @@
 package com.example.todolist.plugins
 
+import com.example.todolist.data.db.PostLikesTable
+import com.example.todolist.data.db.PostLikesTable.select
 import com.example.todolist.data.db.PostsTable
 import com.example.todolist.data.repository.UserRepository
 import com.example.todolist.domain.model.Post
@@ -11,10 +13,9 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.SortOrder  // ✅ Для сортировки
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction  // ✅ Для транзакций
 import java.time.LocalDateTime  // ✅ Для генерации времени
 
@@ -25,6 +26,9 @@ data class CreatePostRequest(
     val content: String,
     val taskId: String? = null
 )
+
+@Serializable
+data class LikeRequest(val userId: String)
 
 // Request/Response модели
 @Serializable
@@ -252,19 +256,28 @@ fun Application.configureRouting(
                         PostsTable.selectAll()
                             .orderBy(PostsTable.createdAt to SortOrder.DESC)
                             .map { row ->
+                                val postId = row[PostsTable.id]
+
+                                // ✅ Считаем лайки для этого поста
+                                val likesCount = PostLikesTable.select {
+                                    PostLikesTable.postId eq postId
+                                }.count().toInt()
+
                                 Post(
                                     id = row[PostsTable.id],
                                     userId = row[PostsTable.userId],
                                     content = row[PostsTable.content],
                                     taskId = row[PostsTable.taskId],
-                                    createdAt = row[PostsTable.createdAt]  // ✅ Уже String!
+                                    createdAt = row[PostsTable.createdAt],
+                                    likesCount = likesCount  // ✅ Передаём посчитанное значение!
                                 )
                             }
                     }
                     call.respond(posts)
                 } catch (e: Exception) {
+                    println("❌ Error fetching posts: ${e.message}")
+                    e.printStackTrace()
                     call.respond(HttpStatusCode.InternalServerError, "Ошибка: ${e.message}")
-                    e.printStackTrace()  // ✅ Выведи ошибку в консоль
                 }
             }
 
@@ -299,6 +312,39 @@ fun Application.configureRouting(
                     println("❌ Ошибка создания поста: ${e.message}")
                     e.printStackTrace()
                     call.respond(HttpStatusCode.BadRequest, "Ошибка: ${e.message}")
+                }
+            }
+
+            // ✅ Эндпоинт: Поставить/Убрать лайк
+            post("/{id}/like") {
+                try {
+                    val postId = call.parameters["id"] ?: return@post
+                    val request = call.receive<LikeRequest>()
+
+                    transaction {
+                        val existingLike = PostLikesTable.select {
+                            (PostLikesTable.postId eq postId) and (PostLikesTable.userId eq request.userId)
+                        }.singleOrNull()
+
+                        if (existingLike != null) {
+                            // Если лайк уже есть -> Удаляем (дизлайк)
+                            PostLikesTable.deleteWhere {
+                                (PostLikesTable.postId eq postId) and (PostLikesTable.userId eq request.userId)
+                            }
+                        } else {
+                            // Если лайка нет -> Добавляем
+                            PostLikesTable.insert {
+                                it[PostLikesTable.postId] = postId
+                                it[PostLikesTable.userId] = request.userId
+                                it[PostLikesTable.createdAt] = java.time.LocalDateTime.now().toString()
+                            }
+                        }
+                    }
+                    call.respond(HttpStatusCode.OK)
+                } catch (e: Exception) {
+                    println("❌ Error liking post: ${e.message}")
+                    e.printStackTrace()
+                    call.respond(HttpStatusCode.InternalServerError, "Error liking post")
                 }
             }
         }

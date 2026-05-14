@@ -28,6 +28,7 @@ object DatabaseFactory {
                 UsersTable,
                 TasksTable,
                 FoldersTable,
+                PostLikesTable,
                 PostsTable  // ✅ ВОТ ЭТО ДОБАВЬ!
             )
         }

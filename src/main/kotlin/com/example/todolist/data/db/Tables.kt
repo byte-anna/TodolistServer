@@ -48,3 +48,12 @@ object PostsTable : Table("posts") {
 
     override val primaryKey = PrimaryKey(id, name = "PK_posts_id")
 }
+
+object PostLikesTable : Table("post_likes") {
+    val id = varchar("id", 36).clientDefault { UUID.randomUUID().toString() }
+    val postId = varchar("post_id", 36)
+    val userId = varchar("user_id", 36)
+    val createdAt = varchar("created_at", 50)
+
+    override val primaryKey = PrimaryKey(id, name = "PK_post_likes_id")
+}
