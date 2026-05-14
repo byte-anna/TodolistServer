@@ -14,15 +14,13 @@ object TasksTable : Table("tasks") {
     val createdAt = datetime("created_at")
     val dueDate = datetime("due_date").nullable()
     val folderId = varchar("folder_id", 36).nullable()
-
-    // ✅ Альтернативный способ задать первичный ключ:
     override val primaryKey = PrimaryKey(id, name = "PK_tasks_id")
 }
 
 object UsersTable : Table("users") {
     val id = varchar("id", 36)
     val email = varchar("email", 255).uniqueIndex()
-    val displayName = varchar("display_name", 100).nullable()  // ✅ Добавили
+    val displayName = varchar("display_name", 100).nullable()
     val passwordHash = varchar("password_hash", 255)
     val createdAt = datetime("created_at")
 
@@ -33,7 +31,7 @@ object FoldersTable : Table("folders") {
     val id = varchar("id", 36)
     val userId = varchar("user_id", 36)
     val name = varchar("name", 100)
-    val color = varchar("color", 7).default("#6200EE") // HEX цвет для иконки
+    val color = varchar("color", 7).default("#6200EE")
     val createdAt = datetime("created_at")
 
     override val primaryKey = PrimaryKey(id, name = "PK_folders_id")
@@ -44,7 +42,7 @@ object PostsTable : Table("posts") {
     val userId = varchar("user_id", 36)
     val content = text("content")
     val taskId = varchar("task_id", 36).nullable()
-    val createdAt = varchar("created_at", 50)  // ✅ ИЗМЕНИЛ: varchar вместо datetime
+    val createdAt = varchar("created_at", 50)
 
     override val primaryKey = PrimaryKey(id, name = "PK_posts_id")
 }
