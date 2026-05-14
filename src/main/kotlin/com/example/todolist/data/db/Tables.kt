@@ -3,6 +3,7 @@ package com.example.todolist.data.db
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
 import java.time.LocalDateTime
+import java.util.*
 
 object TasksTable : Table("tasks") {
     val id = varchar("id", 36)
@@ -36,4 +37,14 @@ object FoldersTable : Table("folders") {
     val createdAt = datetime("created_at")
 
     override val primaryKey = PrimaryKey(id, name = "PK_folders_id")
+}
+
+object PostsTable : Table("posts") {
+    val id = varchar("id", 36).clientDefault { UUID.randomUUID().toString() }
+    val userId = varchar("user_id", 36)
+    val content = text("content")
+    val taskId = varchar("task_id", 36).nullable()
+    val createdAt = varchar("created_at", 50)  // ✅ ИЗМЕНИЛ: varchar вместо datetime
+
+    override val primaryKey = PrimaryKey(id, name = "PK_posts_id")
 }

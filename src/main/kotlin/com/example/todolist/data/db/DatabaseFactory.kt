@@ -24,8 +24,12 @@ object DatabaseFactory {
         Database.connect(dataSource)
 
         transaction {
-            SchemaUtils.createMissingTablesAndColumns(UsersTable)
-            SchemaUtils.createMissingTablesAndColumns(TasksTable)
+            SchemaUtils.create(
+                UsersTable,
+                TasksTable,
+                FoldersTable,
+                PostsTable  // ✅ ВОТ ЭТО ДОБАВЬ!
+            )
         }
 
         println("✅ Database initialized!")
