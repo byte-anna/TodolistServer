@@ -13,7 +13,6 @@ import java.util.UUID
 
 class UserRepository {
 
-    // ✅ НОВОЕ: Генерация соли (16 байт = 32 hex символа)
     private fun generateSalt(): String {
         val random = SecureRandom()
         val bytes = ByteArray(16)
@@ -21,7 +20,6 @@ class UserRepository {
         return bytes.joinToString("") { "%02x".format(it) }
     }
 
-    // ✅ ОБНОВЛЁННОЕ: Хеширование с солью
     fun hashPassword(password: String, salt: String): String {
         val saltedPassword = password + salt
         return MessageDigest
@@ -30,12 +28,10 @@ class UserRepository {
             .joinToString("") { "%02x".format(it) }
     }
 
-    // ✅ НОВОЕ: Проверка пароля
     fun verifyPassword(password: String, passwordHash: String, salt: String): Boolean {
         return hashPassword(password, salt) == passwordHash
     }
 
-    // ✅ ОБНОВЛЁННОЕ: Поиск пользователя (возвращаем salt)
     fun findUserByEmail(email: String): User? {
         val result = DatabaseFactory.dbQuery {
             UsersTable.select { UsersTable.email eq email }.singleOrNull()
@@ -46,18 +42,17 @@ class UserRepository {
                 email = row[UsersTable.email],
                 displayName = row[UsersTable.displayName],
                 passwordHash = row[UsersTable.passwordHash],
-                salt = row[UsersTable.salt],  // ✅ ДОБАВИЛИ
+                salt = row[UsersTable.salt],
                 createdAt = row[UsersTable.createdAt].toString()
             )
         }
     }
 
-    // ✅ ОБНОВЛЁННОЕ: Создание пользователя с солью
     fun createUser(email: String, displayName: String?, password: String): User {
         val userId = UUID.randomUUID().toString()
         val now = LocalDateTime.now()
-        val salt = generateSalt()  // ✅ Генерируем соль
-        val passwordHash = hashPassword(password, salt)  // ✅ Хешируем с солью
+        val salt = generateSalt()
+        val passwordHash = hashPassword(password, salt)
 
         DatabaseFactory.dbQuery {
             UsersTable.insert {
@@ -65,7 +60,7 @@ class UserRepository {
                 it[this.email] = email
                 it[this.displayName] = displayName
                 it[this.passwordHash] = passwordHash
-                it[this.salt] = salt  // ✅ Сохраняем соль
+                it[this.salt] = salt
                 it[createdAt] = now
             }
         }

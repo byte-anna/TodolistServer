@@ -1,6 +1,6 @@
 package com.example.todolist.domain.model
 
-import kotlinx.serialization.Serializable  // ✅ ИМПОРТ!
+import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
 @Serializable
@@ -10,8 +10,8 @@ data class Task(
     val title: String,
     val isDone: Boolean,
     val priority: Int,
-    val dueDate: String? = null,  // ✅ String вместо LocalDateTime
-    val createdAt: String? = null, // ✅ String вместо LocalDateTime
+    val dueDate: String? = null,
+    val createdAt: String? = null,
     val folderId: String? = null,
-    val isShared: Boolean = false  // ✅ Если добавляли
+    val isShared: Boolean = false
 )

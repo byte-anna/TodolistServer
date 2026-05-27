@@ -9,5 +9,5 @@ data class Post(
     val content: String,
     val taskId: String? = null,
     val createdAt: String,
-    val likesCount: Int = 0 // ✅ Новое поле
+    val likesCount: Int = 0
 )

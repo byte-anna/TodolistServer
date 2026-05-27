@@ -23,7 +23,6 @@ class ServerTest {
         assertTrue(email.contains("."))
     }
 
-    // ✅ НОВОЕ: Тест на хеширование с солью (как в реальном коде)
     @Test
     fun `salted password hashing produces different hashes for same password`() {
         val password = "MySecurePassword123"
@@ -36,10 +35,8 @@ class ServerTest {
         val hash1 = hashPasswordWithSalt(password, salt1)
         val hash2 = hashPasswordWithSalt(password, salt2)
 
-        // ✅ Разные соли = разные хеши (защита от rainbow tables)
         assertNotEquals(hash1, hash2, "Same password with different salts should produce different hashes")
 
-        // ✅ Но формат правильный (64 hex символа для SHA-256)
         assertEquals(64, hash1.length)
         assertEquals(64, hash2.length)
         assertTrue(hash1.all { it.isDigit() || it in 'a'..'f' })
@@ -51,13 +48,11 @@ class ServerTest {
         val salt = generateSalt()
         val storedHash = hashPasswordWithSalt(password, salt)
 
-        // ✅ Правильный пароль проходит верификацию
         assertTrue(
             verifyPassword(password, storedHash, salt),
             "Correct password should verify successfully"
         )
 
-        // ✅ Неправильный пароль не проходит
         assertTrue(
             !verifyPassword("WrongPassword", storedHash, salt),
             "Wrong password should fail verification"
@@ -74,7 +69,6 @@ class ServerTest {
         assertTrue(hash.all { it.isDigit() || it in 'a'..'f' })
     }
 
-    // ✅ Вспомогательные функции (как в UserRepository)
     private fun generateSalt(): String {
         val random = SecureRandom()
         val bytes = ByteArray(16)

@@ -15,7 +15,7 @@ kotlin {
     jvmToolchain(17)
 }
 
-// ✅ ВАЖНО: Блок dependencies должен быть открыт!
+
 dependencies {
     // === Ktor Server ===
     implementation("io.ktor:ktor-server-core-jvm:2.3.9")
@@ -49,4 +49,4 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation("io.ktor:ktor-server-tests-jvm:2.3.9")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:1.8.0")
-}  // ✅ Не забудь закрыть блок!
+}

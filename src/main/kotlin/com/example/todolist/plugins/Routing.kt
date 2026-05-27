@@ -16,8 +16,6 @@ import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.transactions.transaction  // ✅ Для транзакций
-import java.time.LocalDateTime  // ✅ Для генерации времени
 
 
 @kotlinx.serialization.Serializable
@@ -64,7 +62,6 @@ fun Application.configureRouting(
     folderRepository: FolderRepository
 ) {
     routing {
-        // === AUTH: REGISTER ===
         post("/auth/register") {
             try {
                 val request = call.receive<RegisterRequest>()
@@ -80,7 +77,6 @@ fun Application.configureRouting(
                     return@post
                 }
 
-                // ✅ Передаём plain password, хеширование внутри
                 val newUser = userRepository.createUser(
                     email = request.email,
                     displayName = request.displayName,
@@ -103,7 +99,6 @@ fun Application.configureRouting(
                     return@post
                 }
 
-                // ✅ Проверяем с солью
                 val isValidPassword = userRepository.verifyPassword(
                     password = request.password,
                     passwordHash = user.passwordHash,
@@ -121,7 +116,6 @@ fun Application.configureRouting(
             }
         }
 
-        // === TASKS ENDPOINTS ===
         get("/tasks") {
             val userId = call.parameters["userId"]
             if (userId == null) {
@@ -191,7 +185,7 @@ fun Application.configureRouting(
                     request.title,
                     request.isDone,
                     request.priority,
-                    request.dueDate,  // ✅ Добавили
+                    request.dueDate,
                     folderId = request.folderId
                 )
                 if (updated) call.respond(HttpStatusCode.OK)
@@ -215,7 +209,6 @@ fun Application.configureRouting(
             }
         }
 
-// Создать папку
         post("/folders") {
             val userId = call.parameters["userId"] ?: run {
                 call.respond(HttpStatusCode.BadRequest, ErrorResponse("userId is required"))
@@ -234,7 +227,6 @@ fun Application.configureRouting(
             }
         }
 
-// Удалить папку
         delete("/folders/{id}") {
             val folderId = call.parameters["id"] ?: run {
                 call.respond(HttpStatusCode.BadRequest, ErrorResponse("Folder ID is required"))
@@ -254,7 +246,6 @@ fun Application.configureRouting(
         }
 
         route("/posts") {
-            // ✅ GET: Получить ленту постов
             get {
                 try {
                     val posts = transaction {
@@ -263,7 +254,6 @@ fun Application.configureRouting(
                             .map { row ->
                                 val postId = row[PostsTable.id]
 
-                                // ✅ Считаем лайки для этого поста
                                 val likesCount = PostLikesTable.select {
                                     PostLikesTable.postId eq postId
                                 }.count().toInt()
@@ -274,7 +264,7 @@ fun Application.configureRouting(
                                     content = row[PostsTable.content],
                                     taskId = row[PostsTable.taskId],
                                     createdAt = row[PostsTable.createdAt],
-                                    likesCount = likesCount  // ✅ Передаём посчитанное значение!
+                                    likesCount = likesCount
                                 )
                             }
                     }
@@ -285,19 +275,16 @@ fun Application.configureRouting(
                 }
             }
 
-            // ✅ POST: Создать новый пост
             post {
                 try {
-                    // ✅ Принимаем CreatePostRequest (то, что шлёт клиент)
                     val request = call.receive<CreatePostRequest>()
 
-                    // ✅ Генерируем недостающие поля на сервере
                     val newPost = Post(
-                        id = java.util.UUID.randomUUID().toString(),  // ✅ Генерируем id
+                        id = java.util.UUID.randomUUID().toString(),
                         userId = request.userId,
                         content = request.content,
                         taskId = request.taskId,
-                        createdAt = java.time.LocalDateTime.now().toString()  // ✅ Генерируем время
+                        createdAt = java.time.LocalDateTime.now().toString()
                     )
 
                     transaction {
@@ -310,7 +297,6 @@ fun Application.configureRouting(
                         }
                     }
 
-                    // ✅ Возвращаем созданный пост
                     call.respond(HttpStatusCode.Created, newPost)
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -318,7 +304,6 @@ fun Application.configureRouting(
                 }
             }
 
-            // ✅ Эндпоинт: Поставить/Убрать лайк
             post("/{id}/like") {
                 try {
                     val postId = call.parameters["id"] ?: return@post

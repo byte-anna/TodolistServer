@@ -3,7 +3,7 @@ package com.example.todolist
 import com.example.todolist.data.db.DatabaseFactory
 import com.example.todolist.data.repository.FolderRepositoryImpl
 import com.example.todolist.data.repository.TaskRepositoryImpl
-import com.example.todolist.data.repository.UserRepository  // ✅ Правильный импорт
+import com.example.todolist.data.repository.UserRepository
 import com.example.todolist.plugins.configureRouting
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -33,12 +33,10 @@ fun main() {
             allowHeader(io.ktor.http.HttpHeaders.ContentType)
         }
 
-        // ✅ Создаём репозитории (правильные имена!)
         val userRepository = UserRepository()
         val taskRepository = TaskRepositoryImpl()
         val folderRepository = FolderRepositoryImpl()
 
-        // ✅ Передаём все репозитории
         configureRouting(taskRepository, userRepository, folderRepository)
     }.start(wait = true)
 }

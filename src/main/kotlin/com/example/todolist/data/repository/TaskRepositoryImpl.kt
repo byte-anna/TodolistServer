@@ -23,7 +23,7 @@ class TaskRepositoryImpl : TaskRepository {
                         isDone = row[TasksTable.isDone],
                         priority = row[TasksTable.priority],
                         dueDate = row[TasksTable.dueDate]?.toString(),
-                        folderId = row[TasksTable.folderId],  // ✅
+                        folderId = row[TasksTable.folderId],
                         createdAt = row[TasksTable.createdAt].toString()
                     )
                 }
@@ -41,7 +41,7 @@ class TaskRepositoryImpl : TaskRepository {
                     isDone = row[TasksTable.isDone],
                     dueDate = row[TasksTable.dueDate]?.toString(),
                     priority = row[TasksTable.priority],
-                    folderId = row[TasksTable.folderId],  // ✅
+                    folderId = row[TasksTable.folderId],
                     createdAt = row[TasksTable.createdAt].toString()
                 )
             }
@@ -52,7 +52,7 @@ class TaskRepositoryImpl : TaskRepository {
         title: String,
         priority: Int,
         dueDate: String?,
-        folderId: String?  // ✅
+        folderId: String?
     ): Task {
         val taskId = UUID.randomUUID().toString()
         val now = LocalDateTime.now()
@@ -65,7 +65,7 @@ class TaskRepositoryImpl : TaskRepository {
                 it[this.priority] = priority
                 it[this.isDone] = false
                 it[this.dueDate] = dueDate?.let { LocalDateTime.parse(it) }
-                it[this.folderId] = folderId  // ✅
+                it[this.folderId] = folderId
                 it[createdAt] = now
             }
         }
@@ -80,7 +80,7 @@ class TaskRepositoryImpl : TaskRepository {
         isDone: Boolean?,
         priority: Int?,
         dueDate: String?,
-        folderId: String?  // ✅
+        folderId: String?
     ): Boolean {
         return DatabaseFactory.dbQuery {
             val updatedRows = TasksTable.update(
@@ -90,7 +90,7 @@ class TaskRepositoryImpl : TaskRepository {
                 isDone?.let { statement[TasksTable.isDone] = it }
                 priority?.let { statement[TasksTable.priority] = it }
                 dueDate?.let { statement[TasksTable.dueDate] = LocalDateTime.parse(it) }
-                folderId?.let { statement[TasksTable.folderId] = it }  // ✅
+                folderId?.let { statement[TasksTable.folderId] = it }
             }
             updatedRows > 0
         }
