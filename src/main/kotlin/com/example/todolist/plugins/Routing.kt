@@ -80,11 +80,11 @@ fun Application.configureRouting(
                     return@post
                 }
 
-                val passwordHash = userRepository.hashPassword(request.password)
+                // ✅ Передаём plain password, хеширование внутри
                 val newUser = userRepository.createUser(
-                    request.email,
-                    request.displayName,  // ✅ Передаём имя
-                    passwordHash
+                    email = request.email,
+                    displayName = request.displayName,
+                    password = request.password
                 )
 
                 call.respond(HttpStatusCode.Created, AuthResponse(newUser.id, newUser.email, newUser.displayName))
@@ -93,7 +93,6 @@ fun Application.configureRouting(
             }
         }
 
-        // === AUTH: LOGIN ===
         post("/auth/login") {
             try {
                 val request = call.receive<LoginRequest>()
@@ -104,13 +103,19 @@ fun Application.configureRouting(
                     return@post
                 }
 
-                val passwordHash = userRepository.hashPassword(request.password)
-                if (user.passwordHash != passwordHash) {
+                // ✅ Проверяем с солью
+                val isValidPassword = userRepository.verifyPassword(
+                    password = request.password,
+                    passwordHash = user.passwordHash,
+                    salt = user.salt
+                )
+
+                if (!isValidPassword) {
                     call.respond(HttpStatusCode.Unauthorized, ErrorResponse("Неверный пароль"))
                     return@post
                 }
 
-                call.respond(HttpStatusCode.OK, AuthResponse(user.id, user.email))
+                call.respond(HttpStatusCode.OK, AuthResponse(user.id, user.email, user.displayName))
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.InternalServerError, ErrorResponse("Ошибка входа: ${e.message}"))
             }

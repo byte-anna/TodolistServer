@@ -8,5 +8,6 @@ data class User(
     val email: String,
     val displayName: String?,
     val passwordHash: String,
+    val salt: String,
     val createdAt: String
 )
