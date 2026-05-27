@@ -29,11 +29,10 @@ object DatabaseFactory {
                 TasksTable,
                 FoldersTable,
                 PostLikesTable,
-                PostsTable  // ✅ ВОТ ЭТО ДОБАВЬ!
+                PostsTable
             )
         }
 
-        println("✅ Database initialized!")
     }
 
     fun <T> dbQuery(block: () -> T): T = transaction { block() }

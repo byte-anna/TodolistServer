@@ -275,7 +275,6 @@ fun Application.configureRouting(
                     }
                     call.respond(posts)
                 } catch (e: Exception) {
-                    println("❌ Error fetching posts: ${e.message}")
                     e.printStackTrace()
                     call.respond(HttpStatusCode.InternalServerError, "Ошибка: ${e.message}")
                 }
@@ -309,7 +308,6 @@ fun Application.configureRouting(
                     // ✅ Возвращаем созданный пост
                     call.respond(HttpStatusCode.Created, newPost)
                 } catch (e: Exception) {
-                    println("❌ Ошибка создания поста: ${e.message}")
                     e.printStackTrace()
                     call.respond(HttpStatusCode.BadRequest, "Ошибка: ${e.message}")
                 }
@@ -342,7 +340,6 @@ fun Application.configureRouting(
                     }
                     call.respond(HttpStatusCode.OK)
                 } catch (e: Exception) {
-                    println("❌ Error liking post: ${e.message}")
                     e.printStackTrace()
                     call.respond(HttpStatusCode.InternalServerError, "Error liking post")
                 }
