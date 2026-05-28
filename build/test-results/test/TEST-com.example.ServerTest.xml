@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.example.ServerTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-05-27T14:11:04.928Z" hostname="MSI" time="0.05">
+<testsuite name="com.example.ServerTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-05-28T12:34:07.170Z" hostname="MSI" time="0.054">
   <properties/>
-  <testcase name="SHA-256 produces correct hash format" classname="com.example.ServerTest" time="0.038"/>
+  <testcase name="SHA-256 produces correct hash format" classname="com.example.ServerTest" time="0.026"/>
   <testcase name="password verification works correctly" classname="com.example.ServerTest" time="0.003"/>
   <testcase name="string utilities work correctly" classname="com.example.ServerTest" time="0.0"/>
   <testcase name="email validation logic" classname="com.example.ServerTest" time="0.007"/>
-  <testcase name="salted password hashing produces different hashes for same password" classname="com.example.ServerTest" time="0.002"/>
+  <testcase name="task title validation rejects empty strings" classname="com.example.ServerTest" time="0.002"/>
+  <testcase name="login validation checks basic rules" classname="com.example.ServerTest" time="0.005"/>
+  <testcase name="post content cannot be empty" classname="com.example.ServerTest" time="0.0"/>
+  <testcase name="task priority must be between 1 and 3" classname="com.example.ServerTest" time="0.004"/>
+  <testcase name="salted password hashing produces different hashes for same password" classname="com.example.ServerTest" time="0.003"/>
+  <testcase name="UUID generation produces valid format" classname="com.example.ServerTest" time="0.003"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
