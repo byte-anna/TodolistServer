@@ -13,7 +13,6 @@ object TasksTable : Table("tasks") {
     val priority = integer("priority").default(1)
     val createdAt = datetime("created_at")
     val dueDate = datetime("due_date").nullable()
-    val folderId = varchar("folder_id", 36).nullable()
     override val primaryKey = PrimaryKey(id, name = "PK_tasks_id")
 }
 
@@ -26,16 +25,6 @@ object UsersTable : Table("users") {
     val createdAt = datetime("created_at")
 
     override val primaryKey = PrimaryKey(id, name = "PK_users_id")
-}
-
-object FoldersTable : Table("folders") {
-    val id = varchar("id", 36)
-    val userId = varchar("user_id", 36)
-    val name = varchar("name", 100)
-    val color = varchar("color", 7).default("#6200EE")
-    val createdAt = datetime("created_at")
-
-    override val primaryKey = PrimaryKey(id, name = "PK_folders_id")
 }
 
 object PostsTable : Table("posts") {

@@ -49,4 +49,6 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation("io.ktor:ktor-server-tests-jvm:2.3.9")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:1.8.0")
+
+    implementation("com.auth0:java-jwt:4.4.0")
 }

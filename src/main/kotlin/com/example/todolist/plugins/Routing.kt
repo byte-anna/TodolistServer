@@ -5,7 +5,6 @@ import com.example.todolist.data.db.PostLikesTable.select
 import com.example.todolist.data.db.PostsTable
 import com.example.todolist.data.repository.UserRepository
 import com.example.todolist.domain.model.Post
-import com.example.todolist.domain.repository.FolderRepository
 import com.example.todolist.domain.repository.TaskRepository
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -39,27 +38,23 @@ data class LoginRequest(val email: String, val password: String)
 data class AuthResponse(val userId: String, val email: String, val displayName: String? = null)
 
 @Serializable
-data class CreateTaskRequest(val title: String, val priority: Int = 1, val folderId: String? = null, val dueDate: String? = null)
+data class CreateTaskRequest(val title: String, val priority: Int = 1, val dueDate: String? = null)
 
 @Serializable
 data class UpdateTaskRequest(
     val title: String? = null,
     val isDone: Boolean? = null,
     val dueDate: String? = null,
-    val folderId: String? = null,
     val priority: Int? = null
 )
 
 @Serializable
 data class ErrorResponse(val error: String)
 
-@Serializable
-data class CreateFolderRequest(val name: String, val color: String = "#6200EE")
 
 fun Application.configureRouting(
     taskRepository: TaskRepository,
-    userRepository: UserRepository,
-    folderRepository: FolderRepository
+    userRepository: UserRepository
 ) {
     routing {
         post("/auth/register") {
@@ -67,13 +62,13 @@ fun Application.configureRouting(
                 val request = call.receive<RegisterRequest>()
 
                 if (request.email.isBlank() || request.password.length < 6) {
-                    call.respond(HttpStatusCode.BadRequest, ErrorResponse("Email и пароль обязательны. Минимум 6 символов"))
+                    call.respond(HttpStatusCode.BadRequest, ErrorResponse("Логин и пароль обязательны. Минимум 6 символов"))
                     return@post
                 }
 
                 val existingUser = userRepository.findUserByEmail(request.email)
                 if (existingUser != null) {
-                    call.respond(HttpStatusCode.Conflict, ErrorResponse("Пользователь с таким email уже существует"))
+                    call.respond(HttpStatusCode.Conflict, ErrorResponse("Пользователь с таким логином уже существует"))
                     return@post
                 }
 
@@ -110,7 +105,13 @@ fun Application.configureRouting(
                     return@post
                 }
 
-                call.respond(HttpStatusCode.OK, AuthResponse(user.id, user.email, user.displayName))
+
+                val token = JwtUtils.generateToken(user.id, user.email)
+                call.respond(HttpStatusCode.OK, mapOf(
+                    "userId" to user.id,
+                    "email" to user.email,
+                    "token" to token  // ← добавили токен
+                ))
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.InternalServerError, ErrorResponse("Ошибка входа: ${e.message}"))
             }
@@ -144,7 +145,12 @@ fun Application.configureRouting(
                     return@post
                 }
 
-                val newTask = taskRepository.createTask(userId, request.title.trim(), request.priority, request.folderId, request.dueDate)
+                val newTask = taskRepository.createTask(
+                    userId,
+                    request.title.trim(),
+                    request.priority,
+                    request.dueDate
+                )
                 call.respond(HttpStatusCode.Created, newTask)
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.InternalServerError, ErrorResponse(e.message ?: "Failed to create task"))
@@ -185,60 +191,9 @@ fun Application.configureRouting(
                     request.title,
                     request.isDone,
                     request.priority,
-                    request.dueDate,
-                    folderId = request.folderId
+                    request.dueDate
                 )
                 if (updated) call.respond(HttpStatusCode.OK)
-                else call.respond(HttpStatusCode.NotFound)
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError)
-            }
-        }
-
-        // Получить все папки пользователя
-        get("/folders") {
-            val userId = call.parameters["userId"] ?: run {
-                call.respond(HttpStatusCode.BadRequest, ErrorResponse("userId is required"))
-                return@get
-            }
-            try {
-                val folders = folderRepository.getFolders(userId)
-                call.respond(HttpStatusCode.OK, folders)
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError, ErrorResponse(e.message ?: "Error"))
-            }
-        }
-
-        post("/folders") {
-            val userId = call.parameters["userId"] ?: run {
-                call.respond(HttpStatusCode.BadRequest, ErrorResponse("userId is required"))
-                return@post
-            }
-            try {
-                val request = call.receive<CreateFolderRequest>()
-                if (request.name.isBlank()) {
-                    call.respond(HttpStatusCode.BadRequest, ErrorResponse("Name cannot be empty"))
-                    return@post
-                }
-                val newFolder = folderRepository.createFolder(userId, request.name.trim(), request.color)
-                call.respond(HttpStatusCode.Created, newFolder)
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError, ErrorResponse(e.message ?: "Error"))
-            }
-        }
-
-        delete("/folders/{id}") {
-            val folderId = call.parameters["id"] ?: run {
-                call.respond(HttpStatusCode.BadRequest, ErrorResponse("Folder ID is required"))
-                return@delete
-            }
-            val userId = call.parameters["userId"] ?: run {
-                call.respond(HttpStatusCode.BadRequest, ErrorResponse("userId is required"))
-                return@delete
-            }
-            try {
-                val deleted = folderRepository.deleteFolder(folderId, userId)
-                if (deleted) call.respond(HttpStatusCode.OK)
                 else call.respond(HttpStatusCode.NotFound)
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.InternalServerError)

@@ -1,7 +1,6 @@
 package com.example.todolist
 
 import com.example.todolist.data.db.DatabaseFactory
-import com.example.todolist.data.repository.FolderRepositoryImpl
 import com.example.todolist.data.repository.TaskRepositoryImpl
 import com.example.todolist.data.repository.UserRepository
 import com.example.todolist.plugins.configureRouting
@@ -35,8 +34,7 @@ fun main() {
 
         val userRepository = UserRepository()
         val taskRepository = TaskRepositoryImpl()
-        val folderRepository = FolderRepositoryImpl()
 
-        configureRouting(taskRepository, userRepository, folderRepository)
+        configureRouting(taskRepository, userRepository)
     }.start(wait = true)
 }

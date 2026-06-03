@@ -12,6 +12,5 @@ data class Task(
     val priority: Int,
     val dueDate: String? = null,
     val createdAt: String? = null,
-    val folderId: String? = null,
     val isShared: Boolean = false
 )

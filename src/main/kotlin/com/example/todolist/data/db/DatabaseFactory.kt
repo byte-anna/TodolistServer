@@ -27,7 +27,6 @@ object DatabaseFactory {
             SchemaUtils.create(
                 UsersTable,
                 TasksTable,
-                FoldersTable,
                 PostLikesTable,
                 PostsTable
             )

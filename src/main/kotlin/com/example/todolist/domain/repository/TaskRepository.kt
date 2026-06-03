@@ -10,8 +10,7 @@ interface TaskRepository {
         userId: String,
         title: String,
         priority: Int,
-        dueDate: String?,
-        folderId: String?
+        dueDate: String?
     ): Task
 
     suspend fun updateTask(
@@ -20,8 +19,7 @@ interface TaskRepository {
         title: String? = null,
         isDone: Boolean? = null,
         priority: Int? = null,
-        dueDate: String? = null,
-        folderId: String? = null
+        dueDate: String? = null
     ): Boolean
 
     suspend fun deleteTask(taskId: String, userId: String): Boolean

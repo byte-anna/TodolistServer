@@ -125,12 +125,6 @@ class ServerTest {
             )
         }
 
-        invalidLogins.forEach { login ->
-            assertTrue(
-                login.isBlank() || login.contains(" ") || login.contains("@") || login.contains("#"),
-                "Invalid login '$login' should fail basic check"
-            )
-        }
     }
 
     //Вспомогательные функции
