@@ -10,13 +10,15 @@ fun Application.configureRouting(
     userRepository: UserRepository
 ) {
     routing {
-        // Auth routes (регистрация, логин)
+        // === ОТКРЫТЫЕ маршруты (не требуют авторизации) ===
         authRoutes(userRepository)
 
-        // Task routes (CRUD задач)
-        taskRoutes(taskRepository)
+        // === ЗАЩИЩЁННЫЕ маршруты (требуют JWT токен) ===
+        route("/") {
+            install(JwtAuth)  // ← Применяем middleware ко всем вложенным маршрутам
 
-        // Post routes (лента, лайки)
-        postRoutes()
+            taskRoutes(taskRepository)
+            postRoutes()
+        }
     }
 }

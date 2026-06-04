@@ -1,6 +1,7 @@
 package com.example.todolist.plugins
 
 import com.example.todolist.data.repository.UserRepository
+import com.example.todolist.utils.JwtUtils
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
