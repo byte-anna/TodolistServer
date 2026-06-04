@@ -47,8 +47,13 @@ dependencies {
 
     // === Tests ===
     testImplementation(kotlin("test"))
-    testImplementation("io.ktor:ktor-server-tests-jvm:2.3.9")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:1.8.0")
+    testImplementation("io.ktor:ktor-server-test-host:2.3.9")
+    testImplementation("io.ktor:ktor-client-content-negotiation:2.3.9")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     implementation("com.auth0:java-jwt:4.4.0")
+}
+
+tasks.test {
+    useJUnit()
 }

@@ -14,27 +14,30 @@ import kotlinx.serialization.json.Json
 
 fun main() {
     DatabaseFactory.init()
-    embeddedServer(Netty, port = 8080) {
-        install(ContentNegotiation) {
-            json(Json {
-                prettyPrint = true
-                isLenient = true
-                ignoreUnknownKeys = true
-            })
-        }
+    embeddedServer(Netty, port = 8080, module = Application::module).start(wait = true)
+}
 
-        install(CORS) {
-            anyHost()
-            allowMethod(io.ktor.http.HttpMethod.Get)
-            allowMethod(io.ktor.http.HttpMethod.Post)
-            allowMethod(io.ktor.http.HttpMethod.Put)
-            allowMethod(io.ktor.http.HttpMethod.Delete)
-            allowHeader(io.ktor.http.HttpHeaders.ContentType)
-        }
+fun Application.module() {
+    install(ContentNegotiation) {
+        json(Json {
+            prettyPrint = true
+            isLenient = true
+            ignoreUnknownKeys = true
+        })
+    }
 
-        val userRepository = UserRepository()
-        val taskRepository = TaskRepositoryImpl()
+    install(CORS) {
+        anyHost()
+        allowMethod(io.ktor.http.HttpMethod.Get)
+        allowMethod(io.ktor.http.HttpMethod.Post)
+        allowMethod(io.ktor.http.HttpMethod.Put)
+        allowMethod(io.ktor.http.HttpMethod.Delete)
+        allowHeader(io.ktor.http.HttpHeaders.ContentType)
+        allowHeader(io.ktor.http.HttpHeaders.Authorization)
+    }
 
-        configureRouting(taskRepository, userRepository)
-    }.start(wait = true)
+    val userRepository = UserRepository()
+    val taskRepository = TaskRepositoryImpl()
+
+    configureRouting(taskRepository, userRepository)
 }
