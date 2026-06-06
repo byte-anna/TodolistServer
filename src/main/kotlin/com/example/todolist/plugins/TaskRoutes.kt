@@ -10,11 +10,7 @@ import io.ktor.server.routing.*
 fun Route.taskRoutes(taskRepository: TaskRepository) {
 
     get("/tasks") {
-        val userId = call.parameters["userId"]
-        if (userId == null) {
-            call.respond(HttpStatusCode.BadRequest, ErrorResponse("userId is required"))
-            return@get
-        }
+        val userId = call.requireAuthenticatedUserId() ?: return@get
 
         try {
             val tasks = taskRepository.getTasks(userId)
@@ -28,10 +24,7 @@ fun Route.taskRoutes(taskRepository: TaskRepository) {
     }
 
     post("/tasks") {
-        val userId = call.parameters["userId"] ?: run {
-            call.respond(HttpStatusCode.BadRequest, ErrorResponse("userId is required"))
-            return@post
-        }
+        val userId = call.requireAuthenticatedUserId() ?: return@post
 
         try {
             val request = call.receive<CreateTaskRequest>()
@@ -63,10 +56,7 @@ fun Route.taskRoutes(taskRepository: TaskRepository) {
             call.respond(HttpStatusCode.BadRequest, ErrorResponse("Task ID is required"))
             return@delete
         }
-        val userId = call.parameters["userId"] ?: run {
-            call.respond(HttpStatusCode.BadRequest, ErrorResponse("userId is required"))
-            return@delete
-        }
+        val userId = call.requireAuthenticatedUserId() ?: return@delete
 
         try {
             val deleted = taskRepository.deleteTask(taskId, userId)
@@ -88,10 +78,7 @@ fun Route.taskRoutes(taskRepository: TaskRepository) {
             call.respond(HttpStatusCode.BadRequest, ErrorResponse("Task ID is required"))
             return@put
         }
-        val userId = call.parameters["userId"] ?: run {
-            call.respond(HttpStatusCode.BadRequest, ErrorResponse("userId is required"))
-            return@put
-        }
+        val userId = call.requireAuthenticatedUserId() ?: return@put
 
         try {
             val request = call.receive<UpdateTaskRequest>()

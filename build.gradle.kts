@@ -8,7 +8,7 @@ group = "com.example"
 version = "1.0.0-SNAPSHOT"
 
 application {
-    mainClass.set("com.example.todolist.ApplicationKt")
+    mainClass.set("com.example.todolist.MainKt")
 }
 
 kotlin {
@@ -33,7 +33,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     // === База данных ===
-    implementation("com.h2database:h2:2.2.224")
+    implementation("org.postgresql:postgresql:42.7.3")
     implementation("com.zaxxer:HikariCP:5.1.0")
 
     // === Exposed ORM ===
@@ -50,6 +50,7 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host:2.3.9")
     testImplementation("io.ktor:ktor-client-content-negotiation:2.3.9")
     testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    testImplementation("com.h2database:h2:2.2.224")
 
     implementation("com.auth0:java-jwt:4.4.0")
 }

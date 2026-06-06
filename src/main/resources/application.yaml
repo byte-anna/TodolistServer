@@ -3,4 +3,12 @@ ktor:
     port: 8080
   application:
     modules:
-      - com.example.RoutingKt.configureRouting
+      - com.example.todolist.MainKt.module
+
+database:
+  url: ${DATABASE_URL}
+  user: ${DATABASE_USER}
+  password: ${DATABASE_PASSWORD}
+
+jwt:
+  secret: ${JWT_SECRET}
