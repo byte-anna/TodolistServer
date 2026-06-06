@@ -54,8 +54,8 @@ object DatabaseFactory {
             SchemaUtils.create(
                 UsersTable,
                 TasksTable,
+                PostsTable,
                 PostLikesTable,
-                PostsTable
             )
         }
     }
