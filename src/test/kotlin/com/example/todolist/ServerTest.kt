@@ -32,6 +32,26 @@ class ServerTest {
         }
     }
 
+    private suspend fun registerAndLogin(
+        client: io.ktor.client.HttpClient,
+        email: String = "user_${System.currentTimeMillis()}@mail.com",
+        password: String = "password123"
+    ): AuthResponse {
+        client.post("/auth/register") {
+            contentType(ContentType.Application.Json)
+            setBody(RegisterRequest(email, password))
+        }
+
+        return client.post("/auth/login") {
+            contentType(ContentType.Application.Json)
+            setBody(LoginRequest(email, password))
+        }.body()
+    }
+
+    private fun HttpRequestBuilder.bearerAuth(token: String) {
+        header(HttpHeaders.Authorization, "Bearer $token")
+    }
+
     @Test
     fun `POST auth register should create user and return 201`() = testApplication {
         application { module() }
@@ -124,15 +144,11 @@ class ServerTest {
         application { module() }
         val client = jsonClient()
 
-        // Регистрируем пользователя
-        val regResponse = client.post("/auth/register") {
-            contentType(ContentType.Application.Json)
-            setBody(RegisterRequest("task_test_${System.currentTimeMillis()}@mail.com", "password123"))
-        }
-        val userId = regResponse.body<AuthResponse>().userId
+        val auth = registerAndLogin(client, "task_test_${System.currentTimeMillis()}@mail.com")
 
-        // Создаём задачу
-        val response = client.post("/tasks?userId=$userId") {
+        // Создаём задачу. userId в query намеренно не передаётся: сервер берёт пользователя из JWT.
+        val response = client.post("/tasks") {
+            bearerAuth(auth.token!!)
             contentType(ContentType.Application.Json)
             setBody(CreateTaskRequest("Купить молоко", priority = 2))
         }
@@ -149,25 +165,24 @@ class ServerTest {
         application { module() }
         val client = jsonClient()
 
-        // Регистрируем
-        val regResponse = client.post("/auth/register") {
-            contentType(ContentType.Application.Json)
-            setBody(RegisterRequest("get_tasks_${System.currentTimeMillis()}@mail.com", "password123"))
-        }
-        val userId = regResponse.body<AuthResponse>().userId
+        val auth = registerAndLogin(client, "get_tasks_${System.currentTimeMillis()}@mail.com")
 
         // Создаём 2 задачи
-        client.post("/tasks?userId=$userId") {
+        client.post("/tasks") {
+            bearerAuth(auth.token!!)
             contentType(ContentType.Application.Json)
             setBody(CreateTaskRequest("Задача 1"))
         }
-        client.post("/tasks?userId=$userId") {
+        client.post("/tasks") {
+            bearerAuth(auth.token!!)
             contentType(ContentType.Application.Json)
             setBody(CreateTaskRequest("Задача 2"))
         }
 
         // Получаем задачи
-        val response = client.get("/tasks?userId=$userId")
+        val response = client.get("/tasks") {
+            bearerAuth(auth.token!!)
+        }
 
         assertEquals(HttpStatusCode.OK, response.status)
         val tasks = response.body<List<com.example.todolist.domain.model.Task>>()
@@ -181,7 +196,11 @@ class ServerTest {
         application { module() }
         val client = jsonClient()
 
-        val response = client.get("/posts")
+        val auth = registerAndLogin(client, "posts_list_${System.currentTimeMillis()}@mail.com")
+
+        val response = client.get("/posts") {
+            bearerAuth(auth.token!!)
+        }
 
         assertEquals(HttpStatusCode.OK, response.status)
     }
@@ -191,17 +210,13 @@ class ServerTest {
         application { module() }
         val client = jsonClient()
 
-        // Регистрируем
-        val regResponse = client.post("/auth/register") {
-            contentType(ContentType.Application.Json)
-            setBody(RegisterRequest("post_test_${System.currentTimeMillis()}@mail.com", "password123"))
-        }
-        val userId = regResponse.body<AuthResponse>().userId
+        val auth = registerAndLogin(client, "post_test_${System.currentTimeMillis()}@mail.com")
 
-        // Создаём пост
+        // Создаём пост. userId в body больше не является доверенным источником.
         val response = client.post("/posts") {
+            bearerAuth(auth.token!!)
             contentType(ContentType.Application.Json)
-            setBody(CreatePostRequest(userId, "Выполнил задачу!", null))
+            setBody(CreatePostRequest("spoofed-user-id", "Выполнил задачу!", null))
         }
 
         assertEquals(HttpStatusCode.Created, response.status)

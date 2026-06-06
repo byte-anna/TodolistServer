@@ -11,12 +11,39 @@ object DatabaseFactory {
     private lateinit var dataSource: HikariDataSource
 
     fun init() {
+        connect(
+            jdbcUrl = requiredEnv("DATABASE_URL").toJdbcPostgresUrl(),
+            driverClassName = "org.postgresql.Driver",
+            username = requiredEnv("DATABASE_USER"),
+            password = requiredEnv("DATABASE_PASSWORD")
+        )
+    }
+
+    fun initForTests() {
+        connect(
+            jdbcUrl = "jdbc:h2:mem:todolist_test;DB_CLOSE_DELAY=-1",
+            driverClassName = "org.h2.Driver",
+            username = "sa",
+            password = ""
+        )
+    }
+
+    private fun connect(
+        jdbcUrl: String,
+        driverClassName: String,
+        username: String,
+        password: String
+    ) {
+        if (::dataSource.isInitialized) {
+            dataSource.close()
+        }
+
         dataSource = HikariDataSource(
             HikariConfig().apply {
-                jdbcUrl = "jdbc:h2:file:./todolist_db;DB_CLOSE_DELAY=-1"
-                driverClassName = "org.h2.Driver"
-                username = "sa"
-                password = ""
+                this.jdbcUrl = "jdbc:postgresql://ep-blue-silence-aq3q7isv.c-8.us-east-1.aws.neon.tech:5432/neondb?sslmode=require"
+                this.driverClassName = "org.postgresql.Driver"
+                this.username = "neondb_owner"
+                this.password = "npg_2MmH4KeDhtUy"
                 maximumPoolSize = 10
             }
         )
@@ -31,8 +58,20 @@ object DatabaseFactory {
                 PostsTable
             )
         }
-
     }
 
     fun <T> dbQuery(block: () -> T): T = transaction { block() }
+    private fun requiredEnv(name: String): String {
+        return System.getenv(name)
+            ?: error("Environment variable $name is required for PostgreSQL connection")
+    }
+
+    private fun String.toJdbcPostgresUrl(): String {
+        return when {
+            startsWith("jdbc:postgresql://") -> this
+            startsWith("postgresql://") -> replaceFirst("postgresql://", "jdbc:postgresql://")
+            startsWith("postgres://") -> replaceFirst("postgres://", "jdbc:postgresql://")
+            else -> this
+        }
+    }
 }

@@ -17,6 +17,8 @@ import java.util.UUID
 fun Route.postRoutes() {
 
     get("/posts") {
+        call.requireAuthenticatedUserId() ?: return@get
+
         try {
             val posts = transaction {
                 PostsTable.selectAll()
@@ -49,12 +51,14 @@ fun Route.postRoutes() {
     }
 
     post("/posts") {
+        val authenticatedUserId = call.requireAuthenticatedUserId() ?: return@post
+
         try {
             val request = call.receive<CreatePostRequest>()
 
             val newPost = Post(
                 id = UUID.randomUUID().toString(),
-                userId = request.userId,
+                userId = authenticatedUserId,
                 content = request.content,
                 taskId = request.taskId,
                 createdAt = LocalDateTime.now().toString()
@@ -62,11 +66,11 @@ fun Route.postRoutes() {
 
             transaction {
                 PostsTable.insert {
-                    it[id] = newPost.id
-                    it[userId] = newPost.userId
-                    it[content] = newPost.content
-                    it[taskId] = newPost.taskId
-                    it[createdAt] = newPost.createdAt
+                    it[PostsTable.id] = newPost.id
+                    it[PostsTable.userId] = newPost.userId
+                    it[PostsTable.content] = newPost.content
+                    it[PostsTable.taskId] = newPost.taskId
+                    it[PostsTable.createdAt] = newPost.createdAt
                 }
             }
 
@@ -81,25 +85,23 @@ fun Route.postRoutes() {
     }
 
     post("/posts/{id}/like") {
+        val authenticatedUserId = call.requireAuthenticatedUserId() ?: return@post
+
         try {
             val postId = call.parameters["id"] ?: return@post
-            val request = call.receive<LikeRequest>()
 
             transaction {
                 val existingLike = PostLikesTable.select {
-                    (PostLikesTable.postId eq postId) and (PostLikesTable.userId eq request.userId)
+                    (PostLikesTable.postId eq postId) and (PostLikesTable.userId eq authenticatedUserId)
                 }.singleOrNull()
 
                 if (existingLike != null) {
-                    // Дизлайк
-                    PostLikesTable.deleteWhere {
-                        (PostLikesTable.postId eq postId) and (PostLikesTable.userId eq request.userId)
-                    }
+                    (PostLikesTable.postId eq postId) and (PostLikesTable.userId eq authenticatedUserId)
                 } else {
                     // Лайк
                     PostLikesTable.insert {
+                        it[PostLikesTable.userId] = authenticatedUserId
                         it[PostLikesTable.postId] = postId
-                        it[PostLikesTable.userId] = request.userId
                         it[PostLikesTable.createdAt] = LocalDateTime.now().toString()
                     }
                 }

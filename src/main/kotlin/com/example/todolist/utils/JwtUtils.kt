@@ -6,10 +6,10 @@ import com.auth0.jwt.exceptions.JWTVerificationException
 import java.util.*
 
 object JwtUtils {
-    private const val SECRET = "your-secret-key-change-in-prod"
+    private val secret = System.getenv("JWT_SECRET") ?: "postgresql://neondb_owner:npg_2MmH4KeDhtUy@ep-blue-silence-aq3q7isv.c-8.us-east-1.aws.neon.tech/neondb?sslmode=require"
     private const val EXPIRATION_MS = 7L * 24 * 60 * 60 * 1000 // 7 дней
 
-    private val algorithm = Algorithm.HMAC256(SECRET)
+    private val algorithm = Algorithm.HMAC256(secret)
 
     private val verifier = JWT.require(algorithm)
         .build()
