@@ -13,6 +13,8 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
 import java.util.UUID
+import com.example.todolist.data.db.TasksTable
+import org.jetbrains.exposed.dao.id.EntityID
 
 fun Route.postRoutes() {
 
@@ -35,7 +37,7 @@ fun Route.postRoutes() {
                             userId = row[PostsTable.userId],
                             content = row[PostsTable.content],
                             taskId = row[PostsTable.taskId],
-                            createdAt = row[PostsTable.createdAt],
+                            createdAt = row[PostsTable.createdAt].toString(),
                             likesCount = likesCount
                         )
                     }
@@ -55,13 +57,14 @@ fun Route.postRoutes() {
 
         try {
             val request = call.receive<CreatePostRequest>()
+            val now = LocalDateTime.now()
 
             val newPost = Post(
                 id = UUID.randomUUID().toString(),
                 userId = authenticatedUserId,
                 content = request.content,
                 taskId = request.taskId,
-                createdAt = LocalDateTime.now().toString()
+                createdAt = now.toString()
             )
 
             transaction {
@@ -70,7 +73,7 @@ fun Route.postRoutes() {
                     it[PostsTable.userId] = newPost.userId
                     it[PostsTable.content] = newPost.content
                     it[PostsTable.taskId] = newPost.taskId
-                    it[PostsTable.createdAt] = newPost.createdAt
+                    it[PostsTable.taskId] = newPost.taskId
                 }
             }
 
@@ -95,14 +98,15 @@ fun Route.postRoutes() {
                     (PostLikesTable.postId eq postId) and (PostLikesTable.userId eq authenticatedUserId)
                 }.singleOrNull()
 
-                if (existingLike != null) {
+                if (existingLike != null) {PostLikesTable.deleteWhere{
                     (PostLikesTable.postId eq postId) and (PostLikesTable.userId eq authenticatedUserId)
+                }
                 } else {
                     // Лайк
                     PostLikesTable.insert {
-                        it[PostLikesTable.userId] = authenticatedUserId
                         it[PostLikesTable.postId] = postId
-                        it[PostLikesTable.createdAt] = LocalDateTime.now().toString()
+                        it[PostLikesTable.userId] = authenticatedUserId
+
                     }
                 }
             }

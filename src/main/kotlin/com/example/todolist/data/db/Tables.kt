@@ -4,6 +4,7 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
 import java.util.*
 import org.jetbrains.exposed.sql.ReferenceOption
+import java.time.LocalDateTime
 
 object UsersTable : Table("users") {
     val id = varchar("id", 36)
@@ -36,8 +37,8 @@ object PostsTable : Table("posts") {
     val id = varchar("id", 36).clientDefault { UUID.randomUUID().toString() }
     val userId = varchar("user_id", 36).references(UsersTable.id, onDelete = ReferenceOption.CASCADE)
     val content = text("content")
-    val taskId = optReference("task_id", TasksTable.id, onDelete = ReferenceOption.SET_NULL)
-    val createdAt = varchar("created_at", 50)
+    val taskId = varchar("task_id", 36).references(TasksTable.id, onDelete = ReferenceOption.SET_NULL).nullable()
+    val createdAt = datetime("created_at").clientDefault { LocalDateTime.now() }
 
     override val primaryKey = PrimaryKey(id, name = "PK_posts_id")
     init {
@@ -50,7 +51,7 @@ object PostLikesTable : Table("post_likes") {
     val id = varchar("id", 36).clientDefault { UUID.randomUUID().toString() }
     val postId = varchar("post_id", 36).references(PostsTable.id, onDelete = ReferenceOption.CASCADE)
     val userId = varchar("user_id", 36).references(UsersTable.id, onDelete = ReferenceOption.CASCADE)
-    val createdAt = varchar("created_at", 50)
+    val createdAt = datetime("created_at").clientDefault { LocalDateTime.now() }
 
     override val primaryKey = PrimaryKey(id, name = "PK_post_likes_id")
 
