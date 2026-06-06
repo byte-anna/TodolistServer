@@ -11,6 +11,7 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
+import com.example.todolist.data.repository.PostRepositoryImpl
 
 fun main() {
     DatabaseFactory.init()
@@ -38,6 +39,7 @@ fun Application.module() {
 
     val userRepository = UserRepository()
     val taskRepository = TaskRepositoryImpl()
+    val postRepository = PostRepositoryImpl()
 
-    configureRouting(taskRepository, userRepository)
+    configureRouting(taskRepository, userRepository, postRepository)
 }

@@ -4,10 +4,12 @@ import com.example.todolist.data.repository.UserRepository
 import com.example.todolist.domain.repository.TaskRepository
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
+import com.example.todolist.domain.repository.PostRepository
 
 fun Application.configureRouting(
     taskRepository: TaskRepository,
-    userRepository: UserRepository
+    userRepository: UserRepository,
+    postRepository: PostRepository
 ) {
     routing {
         // === ОТКРЫТЫЕ маршруты (не требуют авторизации) ===
@@ -18,7 +20,7 @@ fun Application.configureRouting(
             install(JwtAuth)  // ← Применяем middleware ко всем вложенным маршрутам
 
             taskRoutes(taskRepository)
-            postRoutes()
+            postRoutes(postRepository)
         }
     }
 }
