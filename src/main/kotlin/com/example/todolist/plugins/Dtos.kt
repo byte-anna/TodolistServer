@@ -46,7 +46,6 @@ data class UpdateTaskRequest(
 
 @Serializable
 data class CreatePostRequest(
-    val userId: String,
     val content: String,
     val taskId: String? = null
 )

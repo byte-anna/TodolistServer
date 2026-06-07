@@ -66,13 +66,12 @@ class PostRepositoryImpl : PostRepository {
     override suspend fun createPost(userId: String, content: String, taskId: String?): Post {
         val now = LocalDateTime.now()
 
-        val task = taskId
-            ?.let { findTask(it, userId) }
-            ?: findLatestCompletedTask(userId)
+        val task = taskId?.let { findTask(it, userId) }
+        val normalizedContent = content.toPostContent(task?.title)
         val newPost = Post(
             id = UUID.randomUUID().toString(),
             userId = userId,
-            content = content.withTaskTitle(task?.title),
+            content = normalizedContent,
             taskId = task?.id,
             createdAt = now.toClientIsoString()
         )
@@ -150,14 +149,14 @@ class PostRepositoryImpl : PostRepository {
         }
     }
 
-    private fun String.withTaskTitle(taskTitle: String?): String {
-        val title = taskTitle?.takeIf { it.isNotBlank() } ?: return this
-        if (contains(title)) return this
+    private fun String.toPostContent(taskTitle: String?): String {
+        val trimmedContent = trim()
+        val title = taskTitle?.trim().orEmpty()
 
-        return if (trim().equals("Выполнил задачу!", ignoreCase = true)) {
-            "Выполнил задачу: $title"
-        } else {
-            "$this\nЗадача: $title"
+        return when {
+            trimmedContent.isNotEmpty() -> trimmedContent
+            title.isNotEmpty() -> title
+            else -> "Опубликовано достижение"
         }
     }
 
@@ -167,7 +166,7 @@ class PostRepositoryImpl : PostRepository {
             posts += Post(
                 id = getString("id"),
                 userId = getString("user_id"),
-                content = getString("content").withTaskTitle(getString("task_title")),
+                content = getString("content"),
                 taskId = getString("task_id"),
                 createdAt = getString("created_at").toClientIsoString()
             )

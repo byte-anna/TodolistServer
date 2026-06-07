@@ -210,6 +210,40 @@ class ServerTest {
     }
 
     @Test
+    fun `POST posts should accept Android JSON with content and taskId`() = testApplication {
+        application { module() }
+        val client = jsonClient()
+
+        val auth = registerAndLogin(client, "android_post_${System.currentTimeMillis()}@mail.com")
+        val taskTitle = "task1_${System.currentTimeMillis()}"
+
+        val task = client.post("/tasks") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(CreateTaskRequest(taskTitle))
+        }.body<com.example.todolist.domain.model.Task>()
+
+        val createPostResponse = client.post("/posts") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody("""{"content":"$taskTitle","taskId":"${task.id}"}""")
+        }
+
+        assertEquals(HttpStatusCode.Created, createPostResponse.status)
+        val createdPost = createPostResponse.body<com.example.todolist.domain.model.Post>()
+        assertEquals(taskTitle, createdPost.content)
+        assertEquals(task.id, createdPost.taskId)
+
+        val posts = client.get("/posts") {
+            bearerAuth(auth.token!!)
+        }.body<List<com.example.todolist.domain.model.Post>>()
+
+        val publishedPost = posts.first { it.id == createdPost.id }
+        assertEquals(taskTitle, publishedPost.content)
+        assertEquals(task.id, publishedPost.taskId)
+    }
+
+    @Test
     fun `POST posts should create post`() = testApplication {
         application { module() }
         val client = jsonClient()
@@ -220,7 +254,7 @@ class ServerTest {
         val response = client.post("/posts") {
             bearerAuth(auth.token!!)
             contentType(ContentType.Application.Json)
-            setBody(CreatePostRequest("spoofed-user-id", "Выполнил задачу!", null))
+            setBody(CreatePostRequest("Выполнил задачу!", null))
         }
 
         assertEquals(HttpStatusCode.Created, response.status)
