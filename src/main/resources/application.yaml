@@ -5,9 +5,9 @@ ktor:
     modules:
       - com.example.todolist.MainKt.module
 database:
-  url: "jdbc:postgresql://ep-blue-silence-aq3q7isv.c-8.us-east-1.aws.neon.tech:5432/neondb?sslmode=require"
-  user: "neondb_owner"
-  password: "npg_2MmH4KeDhtUy"
+  url: ${DATABASE_URL}
+  user: ${DATABASE_USER}
+  password: ${DATABASE_PASSWORD}
 
 jwt:
   secret: ${JWT_SECRET}

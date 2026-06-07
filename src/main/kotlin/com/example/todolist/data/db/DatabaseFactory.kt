@@ -21,7 +21,7 @@ object DatabaseFactory {
 
     fun initForTests() {
         connect(
-            jdbcUrl = "jdbc:h2:mem:todolist_test;DB_CLOSE_DELAY=-1",
+            jdbcUrl = "jdbc:h2:mem:todolist_test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
             driverClassName = "org.h2.Driver",
             username = "sa",
             password = ""
@@ -40,10 +40,10 @@ object DatabaseFactory {
 
         dataSource = HikariDataSource(
             HikariConfig().apply {
-                this.jdbcUrl = "jdbc:postgresql://ep-blue-silence-aq3q7isv.c-8.us-east-1.aws.neon.tech:5432/neondb?sslmode=require"
-                this.driverClassName = "org.postgresql.Driver"
-                this.username = "neondb_owner"
-                this.password = "npg_2MmH4KeDhtUy"
+                this.jdbcUrl = jdbcUrl
+                this.driverClassName = driverClassName
+                this.username = username
+                this.password = password
                 maximumPoolSize = 10
             }
         )
