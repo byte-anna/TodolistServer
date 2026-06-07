@@ -5,6 +5,7 @@ import com.example.todolist.plugins.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.testing.*
@@ -201,6 +202,9 @@ class ServerTest {
         val response = client.get("/posts") {
             bearerAuth(auth.token!!)
         }
+
+        println("STATUS = ${response.status}")
+        println("BODY = ${response.bodyAsText()}")
 
         assertEquals(HttpStatusCode.OK, response.status)
     }
