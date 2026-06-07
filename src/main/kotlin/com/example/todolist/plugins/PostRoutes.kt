@@ -1,15 +1,10 @@
 package com.example.todolist.plugins
 
-import com.example.todolist.data.db.PostLikesTable
-import com.example.todolist.data.db.PostsTable
-import com.example.todolist.domain.model.Post
-import com.example.todolist.domain.repository.PostRepository
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import java.time.LocalDateTime
 import com.example.todolist.domain.usecase.post.CreatePostUseCase
 import com.example.todolist.domain.usecase.post.GetPostsUseCase
 import com.example.todolist.domain.usecase.post.TogglePostLikeUseCase
@@ -41,7 +36,6 @@ fun Route.postRoutes(
 
         try {
             val request = call.receive<CreatePostRequest>()
-            val now = LocalDateTime.now()
 
             val newPost = createPostUseCase(
                 userId = authenticatedUserId,
