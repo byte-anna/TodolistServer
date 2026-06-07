@@ -1,112 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.example.todolist.ServerTest" tests="1" skipped="0" failures="1" errors="0" timestamp="2026-06-07T09:50:17.589Z" hostname="MSI" time="0.001">
+<testsuite name="com.example.todolist.ServerTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-06-07T10:03:20.595Z" hostname="MSI" time="0.861">
   <properties/>
-  <testcase name="classMethod" classname="com.example.todolist.ServerTest" time="0.001">
-    <failure message="com.zaxxer.hikari.pool.HikariPool$PoolInitializationException: Failed to initialize pool: Соединение уже было закрыто" type="com.zaxxer.hikari.pool.HikariPool$PoolInitializationException">com.zaxxer.hikari.pool.HikariPool$PoolInitializationException: Failed to initialize pool: Соединение уже было закрыто
-	at app//com.zaxxer.hikari.pool.HikariPool.throwPoolInitializationException(HikariPool.java:584)
-	at app//com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:564)
-	at app//com.zaxxer.hikari.pool.HikariPool.&lt;init&gt;(HikariPool.java:98)
-	at app//com.zaxxer.hikari.HikariDataSource.&lt;init&gt;(HikariDataSource.java:80)
-	at app//com.example.todolist.data.db.DatabaseFactory.connect(DatabaseFactory.kt:41)
-	at app//com.example.todolist.data.db.DatabaseFactory.initForTests(DatabaseFactory.kt:23)
-	at app//com.example.todolist.ServerTest$Companion.setup(ServerTest.kt:25)
-	at app//com.example.todolist.ServerTest.setup(ServerTest.kt)
-	at java.base@17.0.14/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.14/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.14/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.14/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.RunBefores.invokeMethod(RunBefores.java:33)
-	at app//org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:24)
-	at app//org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at app//org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.runTestClass(JUnitTestClassExecutor.java:122)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:68)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:43)
-	at org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestClassProcessor.processTestClass(AbstractJUnitTestClassProcessor.java:61)
-	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:54)
-	at java.base@17.0.14/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.14/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.14/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.14/java.lang.reflect.Method.invoke(Method.java:569)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
-	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
-	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:92)
-	at jdk.proxy1/jdk.proxy1.$Proxy4.processTestClass(Unknown Source)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker$2.run(TestWorker.java:177)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:126)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:103)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:63)
-	at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
-	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:122)
-	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:72)
-	at app//worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
-	at app//worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
-Caused by: org.postgresql.util.PSQLException: Соединение уже было закрыто
-	at app//org.postgresql.jdbc.PgConnection.checkClosed(PgConnection.java:1009)
-	at app//org.postgresql.jdbc.PgConnection.setTransactionIsolation(PgConnection.java:1071)
-	at app//com.zaxxer.hikari.pool.PoolBase.setupConnection(PoolBase.java:415)
-	at app//com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:365)
-	at app//com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:202)
-	at app//com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:461)
-	at app//com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:550)
-	... 40 more
-</failure>
-  </testcase>
-  <system-out><![CDATA[2026-06-07 12:50:15.546 [Test worker] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-06-07 12:50:17.585 [Test worker] WARN  com.zaxxer.hikari.pool.PoolBase - HikariPool-1 - Default transaction isolation level detection failed (Соединение уже было закрыто).
-2026-06-07 12:50:17.585 [Test worker] ERROR com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Error thrown while acquiring connection from data source
-org.postgresql.util.PSQLException: Соединение уже было закрыто
-	at org.postgresql.jdbc.PgConnection.checkClosed(PgConnection.java:1009)
-	at org.postgresql.jdbc.PgConnection.setTransactionIsolation(PgConnection.java:1071)
-	at com.zaxxer.hikari.pool.PoolBase.setupConnection(PoolBase.java:415)
-	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:365)
-	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:202)
-	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:461)
-	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:550)
-	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:98)
-	at com.zaxxer.hikari.HikariDataSource.<init>(HikariDataSource.java:80)
-	at com.example.todolist.data.db.DatabaseFactory.connect(DatabaseFactory.kt:41)
-	at com.example.todolist.data.db.DatabaseFactory.initForTests(DatabaseFactory.kt:23)
-	at com.example.todolist.ServerTest$Companion.setup(ServerTest.kt:25)
-	at com.example.todolist.ServerTest.setup(ServerTest.kt)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.RunBefores.invokeMethod(RunBefores.java:33)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:24)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.runTestClass(JUnitTestClassExecutor.java:122)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:68)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:43)
-	at org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestClassProcessor.processTestClass(AbstractJUnitTestClassProcessor.java:61)
-	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:54)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
-	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
-	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:92)
-	at jdk.proxy1/jdk.proxy1.$Proxy4.processTestClass(Unknown Source)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker$2.run(TestWorker.java:177)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:126)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:103)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:63)
-	at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
-	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:122)
-	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:72)
-	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
-	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
+  <testcase name="POST tasks should create task and return 201" classname="com.example.todolist.ServerTest" time="0.588"/>
+  <testcase name="POST auth register should create user and return 201" classname="com.example.todolist.ServerTest" time="0.027"/>
+  <testcase name="POST auth register with duplicate email should return 409" classname="com.example.todolist.ServerTest" time="0.029"/>
+  <testcase name="GET posts should return list" classname="com.example.todolist.ServerTest" time="0.065"/>
+  <testcase name="GET tasks should return user tasks" classname="com.example.todolist.ServerTest" time="0.037"/>
+  <testcase name="POST auth login with wrong password should return 401" classname="com.example.todolist.ServerTest" time="0.025"/>
+  <testcase name="POST auth login with valid credentials should return token" classname="com.example.todolist.ServerTest" time="0.061"/>
+  <testcase name="POST posts should create post" classname="com.example.todolist.ServerTest" time="0.029"/>
+  <system-out><![CDATA[2026-06-07 13:03:20.249 [Test worker] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-06-07 13:03:20.435 [Test worker] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:todolist_test user=SA
+2026-06-07 13:03:20.437 [Test worker] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-06-07 13:03:20.895 [DefaultDispatcher-worker-1 @call-context#2] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 13:03:20.928 [DefaultDispatcher-worker-1 @call-context#2] INFO  ktor.test - Application started in 0.039 seconds.
+2026-06-07 13:03:20.930 [DefaultDispatcher-worker-3 @coroutine#4] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 13:03:20.930 [DefaultDispatcher-worker-3 @coroutine#4] INFO  ktor.test - Responding at https://localhost:443
+2026-06-07 13:03:21.204 [DefaultDispatcher-worker-2 @call-context#16] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 13:03:21.205 [DefaultDispatcher-worker-2 @call-context#16] INFO  ktor.test - Application started in 0.002 seconds.
+2026-06-07 13:03:21.205 [DefaultDispatcher-worker-1 @coroutine#18] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 13:03:21.205 [DefaultDispatcher-worker-1 @coroutine#18] INFO  ktor.test - Responding at https://localhost:443
+2026-06-07 13:03:21.230 [DefaultDispatcher-worker-1 @call-context#24] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 13:03:21.231 [DefaultDispatcher-worker-1 @call-context#24] INFO  ktor.test - Application started in 0.002 seconds.
+2026-06-07 13:03:21.232 [DefaultDispatcher-worker-4 @coroutine#26] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 13:03:21.232 [DefaultDispatcher-worker-4 @coroutine#26] INFO  ktor.test - Responding at https://localhost:443
+2026-06-07 13:03:21.258 [DefaultDispatcher-worker-3 @call-context#35] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 13:03:21.259 [DefaultDispatcher-worker-3 @call-context#35] INFO  ktor.test - Application started in 0.001 seconds.
+2026-06-07 13:03:21.260 [DefaultDispatcher-worker-5 @coroutine#37] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 13:03:21.260 [DefaultDispatcher-worker-5 @coroutine#37] INFO  ktor.test - Responding at https://localhost:443
+STATUS = 200 OK
+BODY = []
+2026-06-07 13:03:21.320 [DefaultDispatcher-worker-4 @call-context#49] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 13:03:21.321 [DefaultDispatcher-worker-4 @call-context#49] INFO  ktor.test - Application started in 0.001 seconds.
+2026-06-07 13:03:21.321 [DefaultDispatcher-worker-1 @coroutine#51] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 13:03:21.321 [DefaultDispatcher-worker-1 @coroutine#51] INFO  ktor.test - Responding at https://localhost:443
+2026-06-07 13:03:21.358 [DefaultDispatcher-worker-9 @call-context#69] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 13:03:21.359 [DefaultDispatcher-worker-9 @call-context#69] INFO  ktor.test - Application started in 0.001 seconds.
+2026-06-07 13:03:21.360 [DefaultDispatcher-worker-8 @coroutine#71] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 13:03:21.360 [DefaultDispatcher-worker-8 @coroutine#71] INFO  ktor.test - Responding at https://localhost:443
+2026-06-07 13:03:21.393 [DefaultDispatcher-worker-9 @call-context#80] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 13:03:21.394 [DefaultDispatcher-worker-9 @call-context#80] INFO  ktor.test - Application started in 0.001 seconds.
+2026-06-07 13:03:21.394 [DefaultDispatcher-worker-7 @coroutine#82] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 13:03:21.394 [DefaultDispatcher-worker-7 @coroutine#82] INFO  ktor.test - Responding at https://localhost:443
+2026-06-07 13:03:21.443 [DefaultDispatcher-worker-3 @call-context#91] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 13:03:21.444 [DefaultDispatcher-worker-3 @call-context#91] INFO  ktor.test - Application started in 0.001 seconds.
+2026-06-07 13:03:21.444 [DefaultDispatcher-worker-9 @coroutine#93] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 13:03:21.444 [DefaultDispatcher-worker-9 @coroutine#93] INFO  ktor.test - Responding at https://localhost:443
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
