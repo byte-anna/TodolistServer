@@ -50,6 +50,7 @@ class PostRepositoryImpl : PostRepository {
 
     override suspend fun createPost(userId: String, content: String, taskId: String?): Post {
         val now = LocalDateTime.now()
+
         val newPost = Post(
             id = UUID.randomUUID().toString(),
             userId = userId,
@@ -64,6 +65,7 @@ class PostRepositoryImpl : PostRepository {
                 it[PostsTable.userId] = newPost.userId
                 it[PostsTable.content] = newPost.content
                 it[PostsTable.taskId] = newPost.taskId
+                it[PostsTable.createdAt] = now
             }
         }
 
@@ -84,6 +86,7 @@ class PostRepositoryImpl : PostRepository {
                 PostLikesTable.insert {
                     it[PostLikesTable.postId] = postId
                     it[PostLikesTable.userId] = userId
+                    it[PostLikesTable.createdAt] = LocalDateTime.now()
                 }
             }
         }

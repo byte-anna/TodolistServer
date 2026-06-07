@@ -31,7 +31,7 @@ fun Route.postRoutes(
             e.printStackTrace()
             call.respond(
                 HttpStatusCode.InternalServerError,
-                ErrorResponse("Ошибка: ${e.message}")
+                ErrorResponse(e.stackTraceToString())
             )
         }
     }
