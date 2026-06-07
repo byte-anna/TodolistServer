@@ -1,7 +1,6 @@
 package com.example.todolist.domain.model
 
 import kotlinx.serialization.Serializable
-import java.time.LocalDateTime
 
 @Serializable
 data class Task(

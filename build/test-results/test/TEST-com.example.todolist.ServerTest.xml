@@ -1,51 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.example.todolist.ServerTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-06-07T10:03:20.595Z" hostname="MSI" time="0.861">
+<testsuite name="com.example.todolist.ServerTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-06-07T16:46:22.590Z" hostname="MSI" time="0.897">
   <properties/>
-  <testcase name="POST tasks should create task and return 201" classname="com.example.todolist.ServerTest" time="0.588"/>
-  <testcase name="POST auth register should create user and return 201" classname="com.example.todolist.ServerTest" time="0.027"/>
-  <testcase name="POST auth register with duplicate email should return 409" classname="com.example.todolist.ServerTest" time="0.029"/>
-  <testcase name="GET posts should return list" classname="com.example.todolist.ServerTest" time="0.065"/>
-  <testcase name="GET tasks should return user tasks" classname="com.example.todolist.ServerTest" time="0.037"/>
-  <testcase name="POST auth login with wrong password should return 401" classname="com.example.todolist.ServerTest" time="0.025"/>
-  <testcase name="POST auth login with valid credentials should return token" classname="com.example.todolist.ServerTest" time="0.061"/>
-  <testcase name="POST posts should create post" classname="com.example.todolist.ServerTest" time="0.029"/>
-  <system-out><![CDATA[2026-06-07 13:03:20.249 [Test worker] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-06-07 13:03:20.435 [Test worker] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:todolist_test user=SA
-2026-06-07 13:03:20.437 [Test worker] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-06-07 13:03:20.895 [DefaultDispatcher-worker-1 @call-context#2] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-07 13:03:20.928 [DefaultDispatcher-worker-1 @call-context#2] INFO  ktor.test - Application started in 0.039 seconds.
-2026-06-07 13:03:20.930 [DefaultDispatcher-worker-3 @coroutine#4] INFO  ktor.test - Responding at http://localhost:80
-2026-06-07 13:03:20.930 [DefaultDispatcher-worker-3 @coroutine#4] INFO  ktor.test - Responding at https://localhost:443
-2026-06-07 13:03:21.204 [DefaultDispatcher-worker-2 @call-context#16] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-07 13:03:21.205 [DefaultDispatcher-worker-2 @call-context#16] INFO  ktor.test - Application started in 0.002 seconds.
-2026-06-07 13:03:21.205 [DefaultDispatcher-worker-1 @coroutine#18] INFO  ktor.test - Responding at http://localhost:80
-2026-06-07 13:03:21.205 [DefaultDispatcher-worker-1 @coroutine#18] INFO  ktor.test - Responding at https://localhost:443
-2026-06-07 13:03:21.230 [DefaultDispatcher-worker-1 @call-context#24] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-07 13:03:21.231 [DefaultDispatcher-worker-1 @call-context#24] INFO  ktor.test - Application started in 0.002 seconds.
-2026-06-07 13:03:21.232 [DefaultDispatcher-worker-4 @coroutine#26] INFO  ktor.test - Responding at http://localhost:80
-2026-06-07 13:03:21.232 [DefaultDispatcher-worker-4 @coroutine#26] INFO  ktor.test - Responding at https://localhost:443
-2026-06-07 13:03:21.258 [DefaultDispatcher-worker-3 @call-context#35] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-07 13:03:21.259 [DefaultDispatcher-worker-3 @call-context#35] INFO  ktor.test - Application started in 0.001 seconds.
-2026-06-07 13:03:21.260 [DefaultDispatcher-worker-5 @coroutine#37] INFO  ktor.test - Responding at http://localhost:80
-2026-06-07 13:03:21.260 [DefaultDispatcher-worker-5 @coroutine#37] INFO  ktor.test - Responding at https://localhost:443
+  <testcase name="POST tasks should create task and return 201" classname="com.example.todolist.ServerTest" time="0.684"/>
+  <testcase name="POST auth register should create user and return 201" classname="com.example.todolist.ServerTest" time="0.011"/>
+  <testcase name="POST auth register with duplicate email should return 409" classname="com.example.todolist.ServerTest" time="0.018"/>
+  <testcase name="GET posts should return list" classname="com.example.todolist.ServerTest" time="0.051"/>
+  <testcase name="GET tasks should return user tasks" classname="com.example.todolist.ServerTest" time="0.028"/>
+  <testcase name="POST posts should accept Android JSON with content and taskId" classname="com.example.todolist.ServerTest" time="0.046"/>
+  <testcase name="POST auth login with wrong password should return 401" classname="com.example.todolist.ServerTest" time="0.012"/>
+  <testcase name="POST auth login with valid credentials should return token" classname="com.example.todolist.ServerTest" time="0.031"/>
+  <testcase name="POST posts should create post" classname="com.example.todolist.ServerTest" time="0.014"/>
+  <system-out><![CDATA[2026-06-07 19:46:22.217 [Test worker] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-06-07 19:46:22.419 [Test worker] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:todolist_test user=SA
+2026-06-07 19:46:22.421 [Test worker] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-06-07 19:46:22.949 [DefaultDispatcher-worker-1 @call-context#2] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 19:46:22.986 [DefaultDispatcher-worker-1 @call-context#2] INFO  ktor.test - Application started in 0.044 seconds.
+2026-06-07 19:46:22.988 [DefaultDispatcher-worker-2 @coroutine#4] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 19:46:22.989 [DefaultDispatcher-worker-2 @coroutine#4] INFO  ktor.test - Responding at https://localhost:443
+2026-06-07 19:46:23.280 [DefaultDispatcher-worker-3 @call-context#16] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 19:46:23.280 [DefaultDispatcher-worker-3 @call-context#16] INFO  ktor.test - Application started in 0.002 seconds.
+2026-06-07 19:46:23.280 [DefaultDispatcher-worker-2 @coroutine#18] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 19:46:23.280 [DefaultDispatcher-worker-2 @coroutine#18] INFO  ktor.test - Responding at https://localhost:443
+2026-06-07 19:46:23.290 [DefaultDispatcher-worker-1 @call-context#24] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 19:46:23.291 [DefaultDispatcher-worker-1 @call-context#24] INFO  ktor.test - Application started in 0.001 seconds.
+2026-06-07 19:46:23.292 [DefaultDispatcher-worker-6 @coroutine#26] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 19:46:23.292 [DefaultDispatcher-worker-6 @coroutine#26] INFO  ktor.test - Responding at https://localhost:443
+2026-06-07 19:46:23.308 [DefaultDispatcher-worker-3 @call-context#35] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 19:46:23.309 [DefaultDispatcher-worker-3 @call-context#35] INFO  ktor.test - Application started in 0.001 seconds.
+2026-06-07 19:46:23.310 [DefaultDispatcher-worker-5 @coroutine#37] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 19:46:23.310 [DefaultDispatcher-worker-5 @coroutine#37] INFO  ktor.test - Responding at https://localhost:443
 STATUS = 200 OK
 BODY = []
-2026-06-07 13:03:21.320 [DefaultDispatcher-worker-4 @call-context#49] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-07 13:03:21.321 [DefaultDispatcher-worker-4 @call-context#49] INFO  ktor.test - Application started in 0.001 seconds.
-2026-06-07 13:03:21.321 [DefaultDispatcher-worker-1 @coroutine#51] INFO  ktor.test - Responding at http://localhost:80
-2026-06-07 13:03:21.321 [DefaultDispatcher-worker-1 @coroutine#51] INFO  ktor.test - Responding at https://localhost:443
-2026-06-07 13:03:21.358 [DefaultDispatcher-worker-9 @call-context#69] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-07 13:03:21.359 [DefaultDispatcher-worker-9 @call-context#69] INFO  ktor.test - Application started in 0.001 seconds.
-2026-06-07 13:03:21.360 [DefaultDispatcher-worker-8 @coroutine#71] INFO  ktor.test - Responding at http://localhost:80
-2026-06-07 13:03:21.360 [DefaultDispatcher-worker-8 @coroutine#71] INFO  ktor.test - Responding at https://localhost:443
-2026-06-07 13:03:21.393 [DefaultDispatcher-worker-9 @call-context#80] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-07 13:03:21.394 [DefaultDispatcher-worker-9 @call-context#80] INFO  ktor.test - Application started in 0.001 seconds.
-2026-06-07 13:03:21.394 [DefaultDispatcher-worker-7 @coroutine#82] INFO  ktor.test - Responding at http://localhost:80
-2026-06-07 13:03:21.394 [DefaultDispatcher-worker-7 @coroutine#82] INFO  ktor.test - Responding at https://localhost:443
-2026-06-07 13:03:21.443 [DefaultDispatcher-worker-3 @call-context#91] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-07 13:03:21.444 [DefaultDispatcher-worker-3 @call-context#91] INFO  ktor.test - Application started in 0.001 seconds.
-2026-06-07 13:03:21.444 [DefaultDispatcher-worker-9 @coroutine#93] INFO  ktor.test - Responding at http://localhost:80
-2026-06-07 13:03:21.444 [DefaultDispatcher-worker-9 @coroutine#93] INFO  ktor.test - Responding at https://localhost:443
+2026-06-07 19:46:23.359 [DefaultDispatcher-worker-1 @call-context#49] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 19:46:23.360 [DefaultDispatcher-worker-1 @call-context#49] INFO  ktor.test - Application started in 0.001 seconds.
+2026-06-07 19:46:23.361 [DefaultDispatcher-worker-5 @coroutine#51] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 19:46:23.361 [DefaultDispatcher-worker-5 @coroutine#51] INFO  ktor.test - Responding at https://localhost:443
+2026-06-07 19:46:23.387 [DefaultDispatcher-worker-3 @call-context#69] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 19:46:23.388 [DefaultDispatcher-worker-3 @call-context#69] INFO  ktor.test - Application started in 0.001 seconds.
+2026-06-07 19:46:23.388 [DefaultDispatcher-worker-7 @coroutine#71] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 19:46:23.388 [DefaultDispatcher-worker-7 @coroutine#71] INFO  ktor.test - Responding at https://localhost:443
+2026-06-07 19:46:23.434 [DefaultDispatcher-worker-6 @call-context#89] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 19:46:23.434 [DefaultDispatcher-worker-6 @call-context#89] INFO  ktor.test - Application started in 0.001 seconds.
+2026-06-07 19:46:23.435 [DefaultDispatcher-worker-4 @coroutine#91] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 19:46:23.435 [DefaultDispatcher-worker-4 @coroutine#91] INFO  ktor.test - Responding at https://localhost:443
+2026-06-07 19:46:23.445 [DefaultDispatcher-worker-6 @call-context#100] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 19:46:23.445 [DefaultDispatcher-worker-6 @call-context#100] INFO  ktor.test - Application started in 0.0 seconds.
+2026-06-07 19:46:23.447 [DefaultDispatcher-worker-5 @coroutine#102] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 19:46:23.447 [DefaultDispatcher-worker-5 @coroutine#102] INFO  ktor.test - Responding at https://localhost:443
+2026-06-07 19:46:23.476 [DefaultDispatcher-worker-8 @call-context#111] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 19:46:23.477 [DefaultDispatcher-worker-8 @call-context#111] INFO  ktor.test - Application started in 0.001 seconds.
+2026-06-07 19:46:23.477 [DefaultDispatcher-worker-6 @coroutine#113] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 19:46:23.477 [DefaultDispatcher-worker-6 @coroutine#113] INFO  ktor.test - Responding at https://localhost:443
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

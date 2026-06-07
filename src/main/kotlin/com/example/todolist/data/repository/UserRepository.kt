@@ -5,7 +5,6 @@ import com.example.todolist.data.db.UsersTable
 import com.example.todolist.domain.model.User
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import java.security.MessageDigest
 import java.security.SecureRandom
 import java.time.LocalDateTime
