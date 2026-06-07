@@ -5,12 +5,19 @@ import com.example.todolist.domain.repository.TaskRepository
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import com.example.todolist.domain.repository.PostRepository
+import com.example.todolist.domain.usecase.post.CreatePostUseCase
+import com.example.todolist.domain.usecase.post.GetPostsUseCase
+import com.example.todolist.domain.usecase.post.TogglePostLikeUseCase
 
 fun Application.configureRouting(
     taskRepository: TaskRepository,
     userRepository: UserRepository,
-    postRepository: PostRepository
+    postRepository: PostRepository,
+
 ) {
+    val getPostsUseCase = GetPostsUseCase(postRepository)
+    val createPostUseCase = CreatePostUseCase(postRepository)
+    val togglePostLikeUseCase = TogglePostLikeUseCase(postRepository)
     routing {
         // === ОТКРЫТЫЕ маршруты (не требуют авторизации) ===
         authRoutes(userRepository)
@@ -20,7 +27,11 @@ fun Application.configureRouting(
             install(JwtAuth)  // ← Применяем middleware ко всем вложенным маршрутам
 
             taskRoutes(taskRepository)
-            postRoutes(postRepository)
+            postRoutes(
+                getPostsUseCase,
+                createPostUseCase,
+                togglePostLikeUseCase
+            )
         }
     }
 }

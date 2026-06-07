@@ -14,15 +14,22 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.LocalDateTime
 import java.util.UUID
+import com.example.todolist.domain.usecase.post.CreatePostUseCase
+import com.example.todolist.domain.usecase.post.GetPostsUseCase
+import com.example.todolist.domain.usecase.post.TogglePostLikeUseCase
 
 
-fun Route.postRoutes(postRepository: PostRepository) {
+fun Route.postRoutes(
+    getPostsUseCase: GetPostsUseCase,
+    createPostUseCase: CreatePostUseCase,
+    togglePostLikeUseCase: TogglePostLikeUseCase
+) {
 
     get("/posts") {
         call.requireAuthenticatedUserId() ?: return@get
 
         try {
-            val posts = postRepository.getPosts()
+            val posts = getPostsUseCase()
             call.respond(posts)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -40,7 +47,7 @@ fun Route.postRoutes(postRepository: PostRepository) {
             val request = call.receive<CreatePostRequest>()
             val now = LocalDateTime.now()
 
-            val newPost = postRepository.createPost(
+            val newPost = createPostUseCase(
                 userId = authenticatedUserId,
                 content = request.content,
                 taskId = request.taskId
@@ -62,8 +69,7 @@ fun Route.postRoutes(postRepository: PostRepository) {
         try {
             val postId = call.parameters["id"] ?: return@post
 
-            postRepository.toggleLike(postId, authenticatedUserId)
-
+            togglePostLikeUseCase(postId, authenticatedUserId)
             call.respond(HttpStatusCode.OK)
         } catch (e: Exception) {
             e.printStackTrace()

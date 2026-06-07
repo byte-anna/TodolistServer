@@ -13,6 +13,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import com.example.todolist.data.repository.PostRepositoryImpl
 
+
 fun main() {
     DatabaseFactory.init()
     embeddedServer(Netty, port = 8080, module = Application::module).start(wait = true)
