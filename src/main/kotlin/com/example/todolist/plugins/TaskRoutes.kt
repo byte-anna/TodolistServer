@@ -6,14 +6,23 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import com.example.todolist.domain.usecase.task.CreateTaskUseCase
+import com.example.todolist.domain.usecase.task.DeleteTaskUseCase
+import com.example.todolist.domain.usecase.task.GetTasksUseCase
+import com.example.todolist.domain.usecase.task.UpdateTaskUseCase
 
-fun Route.taskRoutes(taskRepository: TaskRepository) {
+fun Route.taskRoutes(
+    getTasksUseCase: GetTasksUseCase,
+    createTaskUseCase: CreateTaskUseCase,
+    updateTaskUseCase: UpdateTaskUseCase,
+    deleteTaskUseCase: DeleteTaskUseCase
+) {
 
     get("/tasks") {
         val userId = call.requireAuthenticatedUserId() ?: return@get
 
         try {
-            val tasks = taskRepository.getTasks(userId)
+            val tasks = getTasksUseCase(userId)
             call.respond(HttpStatusCode.OK, tasks)
         } catch (e: Exception) {
             call.respond(
@@ -36,7 +45,7 @@ fun Route.taskRoutes(taskRepository: TaskRepository) {
                 return@post
             }
 
-            val newTask = taskRepository.createTask(
+            val newTask = createTaskUseCase(
                 userId,
                 request.title.trim(),
                 request.priority,
@@ -59,7 +68,7 @@ fun Route.taskRoutes(taskRepository: TaskRepository) {
         val userId = call.requireAuthenticatedUserId() ?: return@delete
 
         try {
-            val deleted = taskRepository.deleteTask(taskId, userId)
+            val deleted = deleteTaskUseCase(taskId, userId)
             if (deleted) {
                 call.respond(HttpStatusCode.OK, mapOf("message" to "Task deleted"))
             } else {
@@ -82,7 +91,7 @@ fun Route.taskRoutes(taskRepository: TaskRepository) {
 
         try {
             val request = call.receive<UpdateTaskRequest>()
-            val updated = taskRepository.updateTask(
+            val updated = updateTaskUseCase(
                 taskId,
                 userId,
                 request.title,
