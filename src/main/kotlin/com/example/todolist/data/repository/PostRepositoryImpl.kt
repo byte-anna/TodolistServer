@@ -19,20 +19,32 @@ class PostRepositoryImpl : PostRepository {
 
     override suspend fun getPosts(): List<Post> {
         return DatabaseFactory.dbQuery {
-            PostsTable.selectAll()
+            val posts = PostsTable.selectAll()
                 .orderBy(PostsTable.createdAt to SortOrder.DESC)
                 .map { row ->
-                    val postId = row[PostsTable.id]
-
                     Post(
-                        id = postId,
+                        id = row[PostsTable.id],
                         userId = row[PostsTable.userId],
                         content = row[PostsTable.content],
                         taskId = row[PostsTable.taskId],
-                        createdAt = row[PostsTable.createdAt].toString(),
-                        likesCount = countLikes(postId)
+                        createdAt = row[PostsTable.createdAt].toString()
                     )
                 }
+
+            if (posts.isEmpty()) {
+                posts
+            } else {
+                val postIds = posts.map { it.id }.toSet()
+                val likesCountByPostId = PostLikesTable.selectAll()
+                    .map { row -> row[PostLikesTable.postId] }
+                    .filter { postId -> postId in postIds }
+                    .groupingBy { postId -> postId }
+                    .eachCount()
+
+                posts.map { post ->
+                    post.copy(likesCount = likesCountByPostId[post.id] ?: 0)
+                }
+            }
         }
     }
 

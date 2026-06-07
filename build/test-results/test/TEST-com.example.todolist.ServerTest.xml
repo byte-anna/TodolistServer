@@ -1,49 +1,173 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.example.todolist.ServerTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-06-06T19:07:11.776Z" hostname="MSI" time="8.627">
+<testsuite name="com.example.todolist.ServerTest" tests="1" skipped="0" failures="1" errors="0" timestamp="2026-06-07T06:32:37.882Z" hostname="MSI" time="2.076">
   <properties/>
-  <testcase name="POST tasks should create task and return 201" classname="com.example.todolist.ServerTest" time="1.645"/>
-  <testcase name="POST auth register should create user and return 201" classname="com.example.todolist.ServerTest" time="0.583"/>
-  <testcase name="POST auth register with duplicate email should return 409" classname="com.example.todolist.ServerTest" time="0.826"/>
-  <testcase name="GET posts should return list" classname="com.example.todolist.ServerTest" time="1.117"/>
-  <testcase name="GET tasks should return user tasks" classname="com.example.todolist.ServerTest" time="1.65"/>
-  <testcase name="POST auth login with wrong password should return 401" classname="com.example.todolist.ServerTest" time="0.838"/>
-  <testcase name="POST auth login with valid credentials should return token" classname="com.example.todolist.ServerTest" time="0.849"/>
-  <testcase name="POST posts should create post" classname="com.example.todolist.ServerTest" time="1.118"/>
-  <system-out><![CDATA[2026-06-06 22:07:08.536 [Test worker] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-06-06 22:07:10.605 [Test worker] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@aa22f1c
-2026-06-06 22:07:10.606 [Test worker] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-06-06 22:07:11.936 [DefaultDispatcher-worker-1 @call-context#2] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-06 22:07:11.968 [DefaultDispatcher-worker-1 @call-context#2] INFO  ktor.test - Application started in 0.038 seconds.
-2026-06-06 22:07:11.969 [DefaultDispatcher-worker-3 @coroutine#4] INFO  ktor.test - Responding at http://localhost:80
-2026-06-06 22:07:11.969 [DefaultDispatcher-worker-3 @coroutine#4] INFO  ktor.test - Responding at https://localhost:443
-2026-06-06 22:07:13.436 [DefaultDispatcher-worker-1 @call-context#16] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-06 22:07:13.437 [DefaultDispatcher-worker-1 @call-context#16] INFO  ktor.test - Application started in 0.002 seconds.
-2026-06-06 22:07:13.437 [DefaultDispatcher-worker-5 @coroutine#18] INFO  ktor.test - Responding at http://localhost:80
-2026-06-06 22:07:13.437 [DefaultDispatcher-worker-5 @coroutine#18] INFO  ktor.test - Responding at https://localhost:443
-2026-06-06 22:07:14.019 [DefaultDispatcher-worker-2 @call-context#24] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-06 22:07:14.021 [DefaultDispatcher-worker-2 @call-context#24] INFO  ktor.test - Application started in 0.001 seconds.
-2026-06-06 22:07:14.021 [DefaultDispatcher-worker-1 @coroutine#26] INFO  ktor.test - Responding at http://localhost:80
-2026-06-06 22:07:14.021 [DefaultDispatcher-worker-1 @coroutine#26] INFO  ktor.test - Responding at https://localhost:443
-2026-06-06 22:07:14.835 [DefaultDispatcher-worker-4 @call-context#35] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-06 22:07:14.836 [DefaultDispatcher-worker-4 @call-context#35] INFO  ktor.test - Application started in 0.001 seconds.
-2026-06-06 22:07:14.837 [DefaultDispatcher-worker-2 @coroutine#37] INFO  ktor.test - Responding at http://localhost:80
-2026-06-06 22:07:14.838 [DefaultDispatcher-worker-2 @coroutine#37] INFO  ktor.test - Responding at https://localhost:443
-2026-06-06 22:07:15.961 [DefaultDispatcher-worker-1 @call-context#49] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-06 22:07:15.962 [DefaultDispatcher-worker-1 @call-context#49] INFO  ktor.test - Application started in 0.001 seconds.
-2026-06-06 22:07:15.963 [DefaultDispatcher-worker-4 @coroutine#51] INFO  ktor.test - Responding at http://localhost:80
-2026-06-06 22:07:15.963 [DefaultDispatcher-worker-4 @coroutine#51] INFO  ktor.test - Responding at https://localhost:443
-2026-06-06 22:07:17.614 [DefaultDispatcher-worker-4 @call-context#69] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-06 22:07:17.615 [DefaultDispatcher-worker-4 @call-context#69] INFO  ktor.test - Application started in 0.002 seconds.
-2026-06-06 22:07:17.616 [DefaultDispatcher-worker-3 @coroutine#71] INFO  ktor.test - Responding at http://localhost:80
-2026-06-06 22:07:17.616 [DefaultDispatcher-worker-3 @coroutine#71] INFO  ktor.test - Responding at https://localhost:443
-2026-06-06 22:07:18.451 [DefaultDispatcher-worker-6 @call-context#80] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-06 22:07:18.451 [DefaultDispatcher-worker-6 @call-context#80] INFO  ktor.test - Application started in 0.001 seconds.
-2026-06-06 22:07:18.452 [DefaultDispatcher-worker-3 @coroutine#82] INFO  ktor.test - Responding at http://localhost:80
-2026-06-06 22:07:18.452 [DefaultDispatcher-worker-3 @coroutine#82] INFO  ktor.test - Responding at https://localhost:443
-2026-06-06 22:07:19.300 [DefaultDispatcher-worker-7 @call-context#91] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
-2026-06-06 22:07:19.302 [DefaultDispatcher-worker-7 @call-context#91] INFO  ktor.test - Application started in 0.002 seconds.
-2026-06-06 22:07:19.302 [DefaultDispatcher-worker-5 @coroutine#93] INFO  ktor.test - Responding at http://localhost:80
-2026-06-06 22:07:19.303 [DefaultDispatcher-worker-5 @coroutine#93] INFO  ktor.test - Responding at https://localhost:443
+  <testcase name="GET posts should return list" classname="com.example.todolist.ServerTest" time="2.076">
+    <failure message="java.lang.AssertionError: expected:&lt;200 OK&gt; but was:&lt;500 Internal Server Error&gt;" type="java.lang.AssertionError">java.lang.AssertionError: expected:&lt;200 OK&gt; but was:&lt;500 Internal Server Error&gt;
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at kotlin.test.junit.JUnitAsserter.assertEquals(JUnitSupport.kt:32)
+	at kotlin.test.AssertionsKt__AssertionsKt.assertEquals(Assertions.kt:63)
+	at kotlin.test.AssertionsKt.assertEquals(Unknown Source)
+	at kotlin.test.AssertionsKt__AssertionsKt.assertEquals$default(Assertions.kt:62)
+	at kotlin.test.AssertionsKt.assertEquals$default(Unknown Source)
+	at com.example.todolist.ServerTest$GET posts should return list$1.invokeSuspend(ServerTest.kt:205)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:104)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:277)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at io.ktor.server.testing.TestApplicationKt.testApplication(TestApplication.kt:329)
+	at io.ktor.server.testing.TestApplicationKt.testApplication(TestApplication.kt:287)
+	at com.example.todolist.ServerTest.GET posts should return list(ServerTest.kt:195)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
+	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.runTestClass(JUnitTestClassExecutor.java:122)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:68)
+	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:43)
+	at org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestClassProcessor.processTestClass(AbstractJUnitTestClassProcessor.java:61)
+	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:54)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
+	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
+	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:92)
+	at jdk.proxy1/jdk.proxy1.$Proxy4.processTestClass(Unknown Source)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker$2.run(TestWorker.java:177)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:126)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:103)
+	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:63)
+	at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:122)
+	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:72)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
+	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
+</failure>
+  </testcase>
+  <system-out><![CDATA[2026-06-07 09:32:34.599 [Test worker] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-06-07 09:32:36.905 [Test worker] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@733c423e
+2026-06-07 09:32:36.907 [Test worker] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-06-07 09:32:38.288 [DefaultDispatcher-worker-2 @call-context#2] INFO  ktor.test - No ktor.deployment.watch patterns specified, automatic reload is not active.
+2026-06-07 09:32:38.356 [DefaultDispatcher-worker-2 @call-context#2] INFO  ktor.test - Application started in 0.081 seconds.
+2026-06-07 09:32:38.360 [DefaultDispatcher-worker-3 @coroutine#4] INFO  ktor.test - Responding at http://localhost:80
+2026-06-07 09:32:38.360 [DefaultDispatcher-worker-3 @coroutine#4] INFO  ktor.test - Responding at https://localhost:443
 ]]></system-out>
-  <system-err><![CDATA[]]></system-err>
+  <system-err><![CDATA[java.time.format.DateTimeParseException: Text '2026-06-07 09:31:39.576783+03' could not be parsed at index 20
+	at java.base/java.time.format.DateTimeFormatter.parseResolved0(DateTimeFormatter.java:2052)
+	at java.base/java.time.format.DateTimeFormatter.parse(DateTimeFormatter.java:1954)
+	at java.base/java.time.LocalDateTime.parse(LocalDateTime.java:494)
+	at org.jetbrains.exposed.sql.javatime.JavaLocalDateTimeColumnType.valueFromDB(JavaDateColumnType.kt:208)
+	at org.jetbrains.exposed.sql.ResultRow.rawToColumnValue(ResultRow.kt:82)
+	at org.jetbrains.exposed.sql.ResultRow.access$rawToColumnValue(ResultRow.kt:8)
+	at org.jetbrains.exposed.sql.ResultRow$getInternal$result$1$1.invoke(ResultRow.kt:69)
+	at org.jetbrains.exposed.sql.vendors.DatabaseDialectKt.withDialect(DatabaseDialect.kt:183)
+	at org.jetbrains.exposed.sql.ResultRow.getInternal(ResultRow.kt:68)
+	at org.jetbrains.exposed.sql.ResultRow.get(ResultRow.kt:24)
+	at com.example.todolist.data.repository.PostRepositoryImpl$getPosts$2.invoke(PostRepositoryImpl.kt:30)
+	at com.example.todolist.data.repository.PostRepositoryImpl$getPosts$2.invoke(PostRepositoryImpl.kt:21)
+	at com.example.todolist.data.db.DatabaseFactory$dbQuery$1.invoke(DatabaseFactory.kt:63)
+	at com.example.todolist.data.db.DatabaseFactory$dbQuery$1.invoke(DatabaseFactory.kt:63)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:306)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:353)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:361)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:352)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:261)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:361)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:231)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:209)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:208)
+	at com.example.todolist.data.db.DatabaseFactory.dbQuery(DatabaseFactory.kt:63)
+	at com.example.todolist.data.repository.PostRepositoryImpl.getPosts(PostRepositoryImpl.kt:21)
+	at com.example.todolist.domain.usecase.post.GetPostsUseCase.invoke(GetPostsUseCase.kt:10)
+	at com.example.todolist.plugins.PostRoutesKt$postRoutes$1.invokeSuspend(PostRoutes.kt:28)
+	at com.example.todolist.plugins.PostRoutesKt$postRoutes$1.invoke(PostRoutes.kt)
+	at com.example.todolist.plugins.PostRoutesKt$postRoutes$1.invoke(PostRoutes.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.routing.Routing.executeResult(Routing.kt:190)
+	at io.ktor.server.routing.Routing.interceptor(Routing.kt:64)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invokeSuspend(Routing.kt:140)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invokeSuspend(BaseApplicationEngine.kt:124)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.testing.TestApplicationEngine$3$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.testing.TestApplicationEngine$3$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.testing.TestApplicationEngine$3$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.testing.TestApplicationEngine$3.invokeSuspend(TestApplicationEngine.kt:311)
+	at io.ktor.server.testing.TestApplicationEngine$3.invoke(TestApplicationEngine.kt)
+	at io.ktor.server.testing.TestApplicationEngine$3.invoke(TestApplicationEngine.kt)
+	at io.ktor.server.testing.TestApplicationEngine$2.invokeSuspend(TestApplicationEngine.kt:90)
+	at io.ktor.server.testing.TestApplicationEngine$2.invoke(TestApplicationEngine.kt)
+	at io.ktor.server.testing.TestApplicationEngine$2.invoke(TestApplicationEngine.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.testing.TestApplicationEngine$handleRequestNonBlocking$2$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.testing.TestApplicationEngine$handleRequestNonBlocking$2$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.testing.TestApplicationEngine$handleRequestNonBlocking$2$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.testing.TestApplicationEngine$handleRequestNonBlocking$2.invokeSuspend(TestApplicationEngine.kt:310)
+	at io.ktor.server.testing.TestApplicationEngine$handleRequestNonBlocking$2.invoke(TestApplicationEngine.kt)
+	at io.ktor.server.testing.TestApplicationEngine$handleRequestNonBlocking$2.invoke(TestApplicationEngine.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:61)
+	at kotlinx.coroutines.BuildersKt__Builders_commonKt.withContext(Builders.common.kt:163)
+	at kotlinx.coroutines.BuildersKt.withContext(Unknown Source)
+	at io.ktor.server.testing.TestApplicationEngine.handleRequestNonBlocking$ktor_server_test_host(TestApplicationEngine.kt:225)
+	at io.ktor.server.testing.TestApplicationEngine.handleRequestNonBlocking$ktor_server_test_host$default(TestApplicationEngine.kt:212)
+	at io.ktor.server.testing.client.TestHttpClientEngine.runRequest(TestHttpClientEngine.kt:70)
+	at io.ktor.server.testing.client.TestHttpClientEngine.execute(TestHttpClientEngine.kt:55)
+	at io.ktor.server.testing.client.DelegatingTestClientEngine.execute(DelegatingTestClientEngine.kt:53)
+	at io.ktor.client.engine.HttpClientEngine$executeWithinCallContext$2.invokeSuspend(HttpClientEngine.kt:99)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:104)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:111)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:99)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:585)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:802)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:706)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:693)
+]]></system-err>
 </testsuite>

@@ -21,7 +21,7 @@ class ServerTest {
         @BeforeClass
         @JvmStatic
         fun setup() {
-            DatabaseFactory.init()
+            DatabaseFactory.initForTests()
         }
     }
 
