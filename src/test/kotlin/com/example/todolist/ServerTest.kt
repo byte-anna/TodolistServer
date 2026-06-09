@@ -1,17 +1,21 @@
 package com.example.todolist
 
 import com.example.todolist.data.db.DatabaseFactory
+import com.example.todolist.domain.model.Task
+import com.example.todolist.domain.model.TaskCategory
 import com.example.todolist.plugins.AuthResponse
 import com.example.todolist.plugins.CreatePostRequest
 import com.example.todolist.plugins.CreateTaskRequest
 import com.example.todolist.plugins.LoginRequest
 import com.example.todolist.plugins.RegisterRequest
+import com.example.todolist.plugins.UpdateTaskRequest
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -175,10 +179,11 @@ class ServerTest {
         }
 
         assertEquals(HttpStatusCode.Created, response.status)
-        val task = response.body<com.example.todolist.domain.model.Task>()
+        val task = response.body<Task>()
         assertEquals("Купить молоко", task.title)
         assertEquals(2, task.priority)
         assertEquals(false, task.isDone)
+        assertEquals(TaskCategory.NONE, task.category)
     }
 
     @Test
@@ -204,8 +209,73 @@ class ServerTest {
         }
 
         assertEquals(HttpStatusCode.OK, response.status)
-        val tasks = response.body<List<com.example.todolist.domain.model.Task>>()
+        val tasks = response.body<List<Task>>()
         assertTrue(tasks.size >= 2)
+    }
+
+    @Test
+    fun `POST tasks should save selected category`() = testApplication {
+        application { module() }
+        val client = jsonClient()
+
+        val auth = registerAndLogin(client, "task_category_${System.currentTimeMillis()}@mail.com")
+
+        val response = client.post("/tasks") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(CreateTaskRequest("Task with category", priority = 3, category = TaskCategory.WORK))
+        }
+
+        assertEquals(HttpStatusCode.Created, response.status)
+        val task = response.body<Task>()
+        assertEquals(TaskCategory.WORK, task.category)
+    }
+
+    @Test
+    fun `POST tasks without category should keep backward compatibility`() = testApplication {
+        application { module() }
+        val client = jsonClient()
+
+        val auth = registerAndLogin(client, "task_legacy_${System.currentTimeMillis()}@mail.com")
+
+        val response = client.post("/tasks") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody("""{"title":"Legacy task","priority":2}""")
+        }
+
+        assertEquals(HttpStatusCode.Created, response.status)
+        val task = response.body<Task>()
+        assertEquals(TaskCategory.NONE, task.category)
+    }
+
+    @Test
+    fun `PUT tasks should update category`() = testApplication {
+        application { module() }
+        val client = jsonClient()
+
+        val auth = registerAndLogin(client, "task_update_category_${System.currentTimeMillis()}@mail.com")
+
+        val createdTask = client.post("/tasks") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(CreateTaskRequest("Task to update"))
+        }.body<Task>()
+
+        val updateResponse = client.put("/tasks/${createdTask.id}") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(UpdateTaskRequest(category = TaskCategory.STUDY))
+        }
+
+        assertEquals(HttpStatusCode.OK, updateResponse.status)
+
+        val tasks = client.get("/tasks") {
+            bearerAuth(auth.token!!)
+        }.body<List<Task>>()
+
+        val updatedTask = tasks.first { it.id == createdTask.id }
+        assertEquals(TaskCategory.STUDY, updatedTask.category)
     }
 
     @Test
@@ -260,7 +330,7 @@ class ServerTest {
             bearerAuth(auth.token!!)
             contentType(ContentType.Application.Json)
             setBody(CreateTaskRequest(taskTitle))
-        }.body<com.example.todolist.domain.model.Task>()
+        }.body<Task>()
 
         val createPostResponse = client.post("/posts") {
             bearerAuth(auth.token!!)

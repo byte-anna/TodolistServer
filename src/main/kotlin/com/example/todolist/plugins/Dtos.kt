@@ -1,5 +1,6 @@
 package com.example.todolist.plugins
 
+import com.example.todolist.domain.model.TaskCategory
 import kotlinx.serialization.Serializable
 
 // ============ AUTH DTOs ============
@@ -31,6 +32,7 @@ data class AuthResponse(
 data class CreateTaskRequest(
     val title: String,
     val priority: Int = 1,
+    val category: TaskCategory = TaskCategory.NONE,
     val dueDate: String? = null
 )
 
@@ -39,7 +41,8 @@ data class UpdateTaskRequest(
     val title: String? = null,
     val isDone: Boolean? = null,
     val dueDate: String? = null,
-    val priority: Int? = null
+    val priority: Int? = null,
+    val category: TaskCategory? = null
 )
 
 // ============ POST DTOs ============

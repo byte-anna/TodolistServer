@@ -1,5 +1,6 @@
 package com.example.todolist.domain.repository
 
+import com.example.todolist.domain.model.TaskCategory
 import com.example.todolist.domain.model.Task
 
 interface TaskRepository {
@@ -10,6 +11,7 @@ interface TaskRepository {
         userId: String,
         title: String,
         priority: Int,
+        category: TaskCategory,
         dueDate: String?
     ): Task
 
@@ -19,6 +21,7 @@ interface TaskRepository {
         title: String? = null,
         isDone: Boolean? = null,
         priority: Int? = null,
+        category: TaskCategory? = null,
         dueDate: String? = null
     ): Boolean
 

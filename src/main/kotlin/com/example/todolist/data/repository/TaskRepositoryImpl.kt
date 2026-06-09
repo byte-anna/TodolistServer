@@ -3,6 +3,7 @@ package com.example.todolist.data.repository
 import com.example.todolist.data.db.DatabaseFactory
 import com.example.todolist.data.db.TasksTable
 import com.example.todolist.domain.model.Task
+import com.example.todolist.domain.model.TaskCategory
 import com.example.todolist.domain.repository.TaskRepository
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -28,6 +29,7 @@ class TaskRepositoryImpl : TaskRepository {
                         title = row[TasksTable.title],
                         isDone = row[TasksTable.isDone],
                         priority = row[TasksTable.priority],
+                        category = row[TasksTable.category],
                         dueDate = row[TasksTable.dueDate]?.toString(),
                         createdAt = row[TasksTable.createdAt].toString()
                     )
@@ -44,8 +46,9 @@ class TaskRepositoryImpl : TaskRepository {
                     userId = row[TasksTable.userId],
                     title = row[TasksTable.title],
                     isDone = row[TasksTable.isDone],
-                    dueDate = row[TasksTable.dueDate]?.toString(),
                     priority = row[TasksTable.priority],
+                    category = row[TasksTable.category],
+                    dueDate = row[TasksTable.dueDate]?.toString(),
                     createdAt = row[TasksTable.createdAt].toString()
                 )
             }
@@ -55,6 +58,7 @@ class TaskRepositoryImpl : TaskRepository {
         userId: String,
         title: String,
         priority: Int,
+        category: TaskCategory,
         dueDate: String?
     ): Task {
         val taskId = UUID.randomUUID().toString()
@@ -67,12 +71,13 @@ class TaskRepositoryImpl : TaskRepository {
                 it[this.title] = title
                 it[this.priority] = priority
                 it[this.isDone] = false
+                it[this.category] = category
                 it[this.dueDate] = dueDate?.let(::parseDueDate)
                 it[createdAt] = now
             }
         }
 
-        return Task(taskId, userId, title, false, priority, dueDate, now.toString())
+        return Task(taskId, userId, title, false, priority, category, dueDate, now.toString())
     }
 
     override suspend fun updateTask(
@@ -81,6 +86,7 @@ class TaskRepositoryImpl : TaskRepository {
         title: String?,
         isDone: Boolean?,
         priority: Int?,
+        category: TaskCategory?,
         dueDate: String?
     ): Boolean {
         return DatabaseFactory.dbQuery {
@@ -90,6 +96,7 @@ class TaskRepositoryImpl : TaskRepository {
                 title?.let { statement[TasksTable.title] = it }
                 isDone?.let { statement[TasksTable.isDone] = it }
                 priority?.let { statement[TasksTable.priority] = it }
+                category?.let { statement[TasksTable.category] = it }
                 dueDate?.let { statement[TasksTable.dueDate] = parseDueDate(it) }
             }
             updatedRows > 0

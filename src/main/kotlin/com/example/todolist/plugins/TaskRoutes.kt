@@ -51,6 +51,7 @@ fun Route.taskRoutes(
             userId,
             request.title.trim(),
             request.priority,
+            request.category,
             request.dueDate
         )
         call.respond(HttpStatusCode.Created, newTask)
@@ -93,6 +94,7 @@ fun Route.taskRoutes(
             request.title,
             request.isDone,
             request.priority,
+            request.category,
             request.dueDate
         )
         if (updated) call.respond(HttpStatusCode.OK)
