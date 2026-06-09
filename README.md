@@ -2,40 +2,48 @@
 
 `TodoListServer` — серверная часть приложения TodoList с социальной лентой достижений.
 
-Проект предоставляет REST API для регистрации и авторизации пользователей, управления задачами и публикации достижений в общей ленте. Сервер предназначен для работы с PostgreSQL/Neon в production/dev окружении и с H2 in-memory базой во время тестов.
+Сервер написан на `Kotlin + Ktor`, хранит данные в `PostgreSQL/Neon`, предоставляет REST API для задач, постов и авторизации, а в тестах использует `H2` в режиме совместимости с PostgreSQL.
+
+## Что реализовано
+
+- сервер на `Ktor`
+- внешняя БД `PostgreSQL / Neon`
+- JWT-авторизация запросов
+- REST API для `auth`, `tasks`, `posts`
+- базовое разделение на слои `plugins / domain / data / db`
+- автоматические серверные тесты
 
 ## Стек технологий
-**Kotlin** — основной язык разработки.
-- **Ktor** — HTTP-сервер и routing.
-- **PostgreSQL / Neon** — основная база данных для production/dev.
-- **Exposed** — SQL DSL/ORM слой для работы с таблицами.
-- **HikariCP** — пул JDBC-соединений.
-- **JWT** — авторизация запросов пользователя.
-- **H2** — in-memory база данных для автоматических тестов.
 
-## Архитектура
+- `Kotlin`
+- `Ktor`
+- `PostgreSQL / Neon`
+- `Exposed`
+- `HikariCP`
+- `JWT`
+- `H2` для тестов
 
-Проект разделён на несколько логических слоёв:
+## Структура проекта
 
-- **Routes** — HTTP endpoints приложения. Здесь обрабатываются входящие запросы, параметры маршрутов и ответы клиенту.
-- **Use cases / бизнес-логика** — сценарии работы приложения: регистрация, вход, создание задач, изменение задач, публикация постов и лайки.
-- **Repositories** — слой доступа к данным, который скрывает детали хранения и использует database layer.
-- **Domain models** — основные модели предметной области: пользователь, задача, пост, лайк и DTO для API.
-- **Database layer** — настройка подключения к базе данных, таблицы Exposed и выполнение SQL-транзакций.
-
+- `src/main/kotlin/com/example/todolist/plugins` — маршруты, DTO, auth middleware, обработка ошибок
+- `src/main/kotlin/com/example/todolist/domain` — модели, интерфейсы репозиториев, use case
+- `src/main/kotlin/com/example/todolist/data` — реализация репозиториев и доступ к данным
+- `src/main/kotlin/com/example/todolist/data/db` — подключение к БД и описание таблиц
+- `src/main/resources` — конфигурация приложения
+- `src/test/kotlin` — серверные тесты
 
 ## Переменные окружения
 
-Для запуска production/dev сервера нужно задать переменные окружения:
+Для запуска production/dev сервера нужны:
 
 | Переменная | Назначение |
 | --- | --- |
-| `DATABASE_URL` | JDBC URL или Postgres URL базы данных Neon/PostgreSQL. |
-| `DATABASE_USER` | Имя пользователя базы данных. |
-| `DATABASE_PASSWORD` | Пароль пользователя базы данных. |
-| `JWT_SECRET` | Секрет для подписи JWT токенов. |
+| `DATABASE_URL` | JDBC URL или Postgres URL удалённой БД `PostgreSQL / Neon` |
+| `DATABASE_USER` | пользователь БД |
+| `DATABASE_PASSWORD` | пароль пользователя БД |
+| `JWT_SECRET` | секрет для подписи JWT токенов |
 
-Пример без реальных секретов:
+Пример:
 
 ```bash
 export DATABASE_URL="jdbc:postgresql://<host>:5432/<database>?sslmode=require"
@@ -44,58 +52,93 @@ export DATABASE_PASSWORD="<database-password>"
 export JWT_SECRET="<long-random-secret>"
 ```
 
-> В README намеренно не указаны реальные пароли, реальные токены и реальные секреты.
-
-## Запуск сервера
+## Локальный запуск
 
 ```bash
 ./gradlew run
 ```
-По умолчанию сервер запускается на порту `8080`.
 
-## Запуск тестов
+По умолчанию сервер стартует на `8080`.
+
+## Сборка дистрибутива
+
+```bash
+./gradlew installDist
+```
+
+После этого готовый дистрибутив лежит в:
+
+```text
+build/install/TodoListServer
+```
+
+## Docker
+
+Собрать образ:
+
+```bash
+docker build -t todolist-server .
+```
+
+Запустить контейнер:
+
+```bash
+docker run --rm -p 8080:8080 \
+  -e DATABASE_URL="jdbc:postgresql://<host>:5432/<database>?sslmode=require" \
+  -e DATABASE_USER="<database-user>" \
+  -e DATABASE_PASSWORD="<database-password>" \
+  -e JWT_SECRET="<long-random-secret>" \
+  todolist-server
+```
+
+## Тесты
+
+Запуск тестов:
 
 ```bash
 ./gradlew test --no-configuration-cache
 ```
 
-Тесты не зависят от доступности Neon/PostgreSQL. Для них используется локальная H2 in-memory база данных.
+Тесты не требуют доступа к Neon и работают на локальной `H2` in-memory БД.
 
-## Конфигурация базы данных
+## Работа с БД
 
-- **Production/dev** использует Neon PostgreSQL через переменные окружения `DATABASE_URL`, `DATABASE_USER` и `DATABASE_PASSWORD`.
-- **Tests** используют H2 in-memory database, поэтому тестовый прогон не требует внешней базы данных и не должен подключаться к Neon.
+- в `production/dev` сервер подключается к удалённой `PostgreSQL / Neon` БД
+- в тестах используется `H2` в режиме `PostgreSQL`
+- `DATABASE_URL` поддерживает как `jdbc:postgresql://...`, так и `postgres://...`
 
-## Авторизация и userId
+## Авторизация
 
-API использует JWT авторизацию. После логина клиент получает токен и передаёт его в заголовке:
+Сейчас сервер использует авторизацию по `email/password` с выдачей JWT токена.
+
+После логина клиент передаёт токен так:
 
 ```http
 Authorization: Bearer <jwt-token>
 ```
 
-`userId` для защищённых операций берётся на сервере из JWT, а не из query-параметров или тела запроса. Это важно для безопасности: клиент не должен иметь возможность подменить владельца задачи или поста через `userId` в request body/query.
+`userId` для защищённых операций сервер берёт из JWT, а не из тела или query-параметров.
 
 ## Основные API endpoints
 
 ### Auth
 
-- `POST /auth/register` — регистрация пользователя.
-- `POST /auth/login` — вход пользователя и получение JWT токена.
+- `POST /auth/register` — регистрация пользователя
+- `POST /auth/login` — вход и получение JWT токена
 
 ### Tasks
 
-- `GET /tasks` — получить задачи текущего пользователя.
-- `POST /tasks` — создать задачу для текущего пользователя.
-- `PUT /tasks/{id}` — обновить задачу текущего пользователя.
-- `DELETE /tasks/{id}` — удалить задачу текущего пользователя.
+- `GET /tasks` — получить задачи текущего пользователя
+- `POST /tasks` — создать задачу
+- `PUT /tasks/{id}` — обновить задачу
+- `DELETE /tasks/{id}` — удалить задачу
 
 ### Posts
 
-- `GET /posts` — получить социальную ленту постов.
-- `POST /posts` — создать пост в ленте достижений.
-- `POST /posts/{id}/like` — поставить лайк посту.
+- `GET /posts` — получить ленту постов
+- `POST /posts` — создать пост
+- `POST /posts/{id}/like` — поставить или убрать лайк
 
-## Клиентский кэш
+## Замечание по клиенту
 
-Если используется мобильный клиент с Room, то Room относится только к клиентской части и используется как локальный кэш. Источником истины для синхронизированных данных остаётся серверный API.
+Требования вроде `Room`, `Navigation`, `Retrofit`, `Hilt`, `Material UI` и `UI tests` относятся к клиентской части и должны быть реализованы в отдельном клиентском репозитории.
