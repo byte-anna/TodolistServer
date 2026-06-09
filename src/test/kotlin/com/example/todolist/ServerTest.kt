@@ -215,6 +215,59 @@ class ServerTest {
     }
 
     @Test
+    fun `GET tasks with date query should filter by due date`() = testApplication {
+        application { module() }
+        val client = jsonClient()
+
+        val auth = registerAndLogin(client, "tasks_by_date_${System.currentTimeMillis()}@mail.com")
+
+        client.post("/tasks") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(CreateTaskRequest("Task for selected day", dueDate = "2026-06-09T09:00:00"))
+        }
+        client.post("/tasks") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(CreateTaskRequest("Task for another day", dueDate = "2026-06-10T09:00:00"))
+        }
+        client.post("/tasks") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(CreateTaskRequest("Task without due date"))
+        }
+
+        val response = client.get("/tasks?date=2026-06-09") {
+            bearerAuth(auth.token!!)
+        }
+
+        assertEquals(HttpStatusCode.OK, response.status)
+        val tasks = response.body<List<Task>>()
+        assertEquals(1, tasks.size)
+        assertEquals("Task for selected day", tasks.single().title)
+        assertEquals("2026-06-09T09:00:00", tasks.single().dueDate)
+    }
+
+    @Test
+    fun `GET tasks with invalid date query should return detailed 400`() = testApplication {
+        application { module() }
+        val client = jsonClient()
+
+        val auth = registerAndLogin(client, "tasks_bad_filter_${System.currentTimeMillis()}@mail.com")
+
+        val response = client.get("/tasks?date=09-06-2026") {
+            bearerAuth(auth.token!!)
+        }
+
+        assertEquals(HttpStatusCode.BadRequest, response.status)
+        val error = response.body<ErrorResponse>()
+        assertEquals(
+            "Invalid date format. Expected ISO_LOCAL_DATE like 2026-06-09",
+            error.error
+        )
+    }
+
+    @Test
     fun `POST tasks should save selected category`() = testApplication {
         application { module() }
         val client = jsonClient()

@@ -7,11 +7,14 @@ import com.example.todolist.domain.model.TaskCategory
 import com.example.todolist.domain.repository.TaskRepository
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.less
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -21,9 +24,22 @@ class TaskRepositoryImpl : TaskRepository {
 
     private val dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
-    override suspend fun getTasks(userId: String): List<Task> {
+    override suspend fun getTasks(userId: String, dueDate: LocalDate?): List<Task> {
         return DatabaseFactory.dbQuery {
-            TasksTable.select { TasksTable.userId eq userId }
+            val query = if (dueDate == null) {
+                TasksTable.select { TasksTable.userId eq userId }
+            } else {
+                val startOfDay = dueDate.atStartOfDay()
+                val endOfDay = dueDate.plusDays(1).atStartOfDay()
+
+                TasksTable.select {
+                    (TasksTable.userId eq userId) and
+                        (TasksTable.dueDate greaterEq startOfDay) and
+                        (TasksTable.dueDate less endOfDay)
+                }
+            }
+
+            query
                 .orderBy(TasksTable.createdAt to SortOrder.DESC)
                 .map { row ->
                     Task(

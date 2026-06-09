@@ -13,6 +13,8 @@ import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.put
+import java.time.LocalDate
+import java.time.format.DateTimeParseException
 
 fun Route.taskRoutes(
     getTasksUseCase: GetTasksUseCase,
@@ -23,7 +25,8 @@ fun Route.taskRoutes(
 
     get("/tasks") {
         val userId = call.requireAuthenticatedUserId() ?: return@get
-        val tasks = getTasksUseCase(userId)
+        val dueDateFilter = call.request.queryParameters["date"]?.let(::parseTaskDateFilter)
+        val tasks = getTasksUseCase(userId, dueDateFilter)
         call.respond(HttpStatusCode.OK, tasks)
     }
 
@@ -99,5 +102,13 @@ fun Route.taskRoutes(
         )
         if (updated) call.respond(HttpStatusCode.OK)
         else call.respond(HttpStatusCode.NotFound)
+    }
+}
+
+private fun parseTaskDateFilter(value: String): LocalDate {
+    return try {
+        LocalDate.parse(value)
+    } catch (_: DateTimeParseException) {
+        throw IllegalArgumentException("Invalid date format. Expected ISO_LOCAL_DATE like 2026-06-09")
     }
 }

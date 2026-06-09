@@ -2,9 +2,10 @@ package com.example.todolist.domain.repository
 
 import com.example.todolist.domain.model.TaskCategory
 import com.example.todolist.domain.model.Task
+import java.time.LocalDate
 
 interface TaskRepository {
-    suspend fun getTasks(userId: String): List<Task>
+    suspend fun getTasks(userId: String, dueDate: LocalDate? = null): List<Task>
     suspend fun getTaskById(taskId: String, userId: String): Task?
 
     suspend fun createTask(
