@@ -1,14 +1,25 @@
 package com.example.todolist
 
 import com.example.todolist.data.db.DatabaseFactory
-import com.example.todolist.plugins.*
-import io.ktor.client.call.*
+import com.example.todolist.plugins.AuthResponse
+import com.example.todolist.plugins.CreatePostRequest
+import com.example.todolist.plugins.CreateTaskRequest
+import com.example.todolist.plugins.LoginRequest
+import com.example.todolist.plugins.RegisterRequest
+import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.server.testing.*
+import io.ktor.server.testing.ApplicationTestBuilder
+import io.ktor.server.testing.testApplication
 import kotlinx.serialization.json.Json
 import org.junit.BeforeClass
 import org.junit.Test
@@ -22,11 +33,11 @@ class ServerTest {
         @BeforeClass
         @JvmStatic
         fun setup() {
+            System.setProperty("JWT_SECRET", "test-jwt-secret")
             DatabaseFactory.initForTests()
         }
     }
 
-    // Вспомогательная функция — создаёт клиент с JSON
     private fun ApplicationTestBuilder.jsonClient() = createClient {
         install(ContentNegotiation) {
             json(Json { ignoreUnknownKeys = true })
@@ -76,16 +87,32 @@ class ServerTest {
 
         val email = "duplicate_${System.currentTimeMillis()}@mail.com"
 
-        // Первая регистрация — успешна
         client.post("/auth/register") {
             contentType(ContentType.Application.Json)
             setBody(RegisterRequest(email, "password123"))
         }
 
-        // Вторая регистрация — конфликт
         val response = client.post("/auth/register") {
             contentType(ContentType.Application.Json)
             setBody(RegisterRequest(email, "password123"))
+        }
+
+        assertEquals(HttpStatusCode.Conflict, response.status)
+    }
+
+    @Test
+    fun `POST auth register should normalize email and prevent duplicate with different case`() = testApplication {
+        application { module() }
+        val client = jsonClient()
+
+        client.post("/auth/register") {
+            contentType(ContentType.Application.Json)
+            setBody(RegisterRequest("User_Test@Mail.com", "password123"))
+        }
+
+        val response = client.post("/auth/register") {
+            contentType(ContentType.Application.Json)
+            setBody(RegisterRequest("user_test@mail.com", "password123"))
         }
 
         assertEquals(HttpStatusCode.Conflict, response.status)
@@ -98,13 +125,11 @@ class ServerTest {
 
         val email = "login_test_${System.currentTimeMillis()}@mail.com"
 
-        // Сначала регистрируем
         client.post("/auth/register") {
             contentType(ContentType.Application.Json)
             setBody(RegisterRequest(email, "password123"))
         }
 
-        // Теперь логинимся
         val response = client.post("/auth/login") {
             contentType(ContentType.Application.Json)
             setBody(LoginRequest(email, "password123"))
@@ -123,13 +148,11 @@ class ServerTest {
 
         val email = "wrong_pass_${System.currentTimeMillis()}@mail.com"
 
-        // Регистрируем
         client.post("/auth/register") {
             contentType(ContentType.Application.Json)
             setBody(RegisterRequest(email, "correct_password"))
         }
 
-        // Логин с неверным паролем
         val response = client.post("/auth/login") {
             contentType(ContentType.Application.Json)
             setBody(LoginRequest(email, "wrong_password"))
@@ -138,8 +161,6 @@ class ServerTest {
         assertEquals(HttpStatusCode.Unauthorized, response.status)
     }
 
-    // ============ TASKS TESTS ============
-
     @Test
     fun `POST tasks should create task and return 201`() = testApplication {
         application { module() }
@@ -147,7 +168,6 @@ class ServerTest {
 
         val auth = registerAndLogin(client, "task_test_${System.currentTimeMillis()}@mail.com")
 
-        // Создаём задачу. userId в query намеренно не передаётся: сервер берёт пользователя из JWT.
         val response = client.post("/tasks") {
             bearerAuth(auth.token!!)
             contentType(ContentType.Application.Json)
@@ -168,7 +188,6 @@ class ServerTest {
 
         val auth = registerAndLogin(client, "get_tasks_${System.currentTimeMillis()}@mail.com")
 
-        // Создаём 2 задачи
         client.post("/tasks") {
             bearerAuth(auth.token!!)
             contentType(ContentType.Application.Json)
@@ -180,7 +199,6 @@ class ServerTest {
             setBody(CreateTaskRequest("Задача 2"))
         }
 
-        // Получаем задачи
         val response = client.get("/tasks") {
             bearerAuth(auth.token!!)
         }
@@ -190,7 +208,31 @@ class ServerTest {
         assertTrue(tasks.size >= 2)
     }
 
-    // ============ POSTS TESTS ============
+    @Test
+    fun `GET tasks without token should return 401`() = testApplication {
+        application { module() }
+        val client = jsonClient()
+
+        val response = client.get("/tasks")
+
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
+    }
+
+    @Test
+    fun `POST tasks with invalid dueDate should return 400`() = testApplication {
+        application { module() }
+        val client = jsonClient()
+
+        val auth = registerAndLogin(client, "invalid_due_${System.currentTimeMillis()}@mail.com")
+
+        val response = client.post("/tasks") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(CreateTaskRequest("Task with bad date", dueDate = "tomorrow"))
+        }
+
+        assertEquals(HttpStatusCode.BadRequest, response.status)
+    }
 
     @Test
     fun `GET posts should return list`() = testApplication {
@@ -202,9 +244,6 @@ class ServerTest {
         val response = client.get("/posts") {
             bearerAuth(auth.token!!)
         }
-
-        println("STATUS = ${response.status}")
-        println("BODY = ${response.bodyAsText()}")
 
         assertEquals(HttpStatusCode.OK, response.status)
     }
@@ -250,7 +289,6 @@ class ServerTest {
 
         val auth = registerAndLogin(client, "post_test_${System.currentTimeMillis()}@mail.com")
 
-        // Создаём пост. userId в body больше не является доверенным источником.
         val response = client.post("/posts") {
             bearerAuth(auth.token!!)
             contentType(ContentType.Application.Json)
@@ -258,5 +296,17 @@ class ServerTest {
         }
 
         assertEquals(HttpStatusCode.Created, response.status)
+    }
+
+    @Test
+    fun `POST post like with invalid token should return 401`() = testApplication {
+        application { module() }
+        val client = jsonClient()
+
+        val response = client.post("/posts/some-id/like") {
+            bearerAuth("broken-token")
+        }
+
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
     }
 }

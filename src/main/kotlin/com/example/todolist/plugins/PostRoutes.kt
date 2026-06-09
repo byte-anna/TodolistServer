@@ -1,14 +1,15 @@
 package com.example.todolist.plugins
 
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
 import com.example.todolist.domain.usecase.post.CreatePostUseCase
 import com.example.todolist.domain.usecase.post.GetPostsUseCase
 import com.example.todolist.domain.usecase.post.TogglePostLikeUseCase
-
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.call
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
 
 fun Route.postRoutes(
     getPostsUseCase: GetPostsUseCase,
@@ -18,55 +19,31 @@ fun Route.postRoutes(
 
     get("/posts") {
         call.requireAuthenticatedUserId() ?: return@get
-
-        try {
-            val posts = getPostsUseCase()
-            call.respond(posts)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            call.respond(
-                HttpStatusCode.InternalServerError,
-                ErrorResponse(e.stackTraceToString())
-            )
-        }
+        val posts = getPostsUseCase()
+        call.respond(posts)
     }
 
     post("/posts") {
         val authenticatedUserId = call.requireAuthenticatedUserId() ?: return@post
+        val request = call.receive<CreatePostRequest>()
 
-        try {
-            val request = call.receive<CreatePostRequest>()
+        val newPost = createPostUseCase(
+            userId = authenticatedUserId,
+            content = request.content,
+            taskId = request.taskId
+        )
 
-            val newPost = createPostUseCase(
-                userId = authenticatedUserId,
-                content = request.content,
-                taskId = request.taskId
-            )
-
-            call.respond(HttpStatusCode.Created, newPost)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            call.respond(
-                HttpStatusCode.BadRequest,
-                ErrorResponse("Ошибка: ${e.message}")
-            )
-        }
+        call.respond(HttpStatusCode.Created, newPost)
     }
 
     post("/posts/{id}/like") {
         val authenticatedUserId = call.requireAuthenticatedUserId() ?: return@post
-
-        try {
-            val postId = call.parameters["id"] ?: return@post
-
-            togglePostLikeUseCase(postId, authenticatedUserId)
-            call.respond(HttpStatusCode.OK)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            call.respond(
-                HttpStatusCode.InternalServerError,
-                ErrorResponse("Error liking post: ${e.message}")
-            )
+        val postId = call.parameters["id"] ?: run {
+            call.respond(HttpStatusCode.BadRequest, ErrorResponse("Post ID is required"))
+            return@post
         }
+
+        togglePostLikeUseCase(postId, authenticatedUserId)
+        call.respond(HttpStatusCode.OK)
     }
 }

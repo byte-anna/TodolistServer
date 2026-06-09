@@ -1,18 +1,21 @@
 package com.example.todolist
 
 import com.example.todolist.data.db.DatabaseFactory
+import com.example.todolist.data.repository.PostRepositoryImpl
 import com.example.todolist.data.repository.TaskRepositoryImpl
 import com.example.todolist.data.repository.UserRepository
+import com.example.todolist.domain.repository.AuthRepository
 import com.example.todolist.plugins.configureRouting
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.plugins.cors.routing.*
-import io.ktor.serialization.kotlinx.json.*
+import com.example.todolist.plugins.configureStatusPages
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.callloging.CallLogging
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.cors.routing.CORS
 import kotlinx.serialization.json.Json
-import com.example.todolist.data.repository.PostRepositoryImpl
-
 
 fun main() {
     DatabaseFactory.init()
@@ -20,6 +23,8 @@ fun main() {
 }
 
 fun Application.module() {
+    install(CallLogging)
+
     install(ContentNegotiation) {
         json(Json {
             prettyPrint = true
@@ -38,9 +43,11 @@ fun Application.module() {
         allowHeader(io.ktor.http.HttpHeaders.Authorization)
     }
 
-    val userRepository = UserRepository()
+    configureStatusPages()
+
+    val authRepository: AuthRepository = UserRepository()
     val taskRepository = TaskRepositoryImpl()
     val postRepository = PostRepositoryImpl()
 
-    configureRouting(taskRepository, userRepository, postRepository)
+    configureRouting(taskRepository, authRepository, postRepository)
 }

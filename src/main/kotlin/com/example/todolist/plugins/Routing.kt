@@ -1,10 +1,8 @@
 package com.example.todolist.plugins
 
-import com.example.todolist.data.repository.UserRepository
-import com.example.todolist.domain.repository.TaskRepository
-import io.ktor.server.application.*
-import io.ktor.server.routing.*
+import com.example.todolist.domain.repository.AuthRepository
 import com.example.todolist.domain.repository.PostRepository
+import com.example.todolist.domain.repository.TaskRepository
 import com.example.todolist.domain.usecase.post.CreatePostUseCase
 import com.example.todolist.domain.usecase.post.GetPostsUseCase
 import com.example.todolist.domain.usecase.post.TogglePostLikeUseCase
@@ -12,12 +10,15 @@ import com.example.todolist.domain.usecase.task.CreateTaskUseCase
 import com.example.todolist.domain.usecase.task.DeleteTaskUseCase
 import com.example.todolist.domain.usecase.task.GetTasksUseCase
 import com.example.todolist.domain.usecase.task.UpdateTaskUseCase
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.routing.route
+import io.ktor.server.routing.routing
 
 fun Application.configureRouting(
     taskRepository: TaskRepository,
-    userRepository: UserRepository,
-    postRepository: PostRepository,
-
+    authRepository: AuthRepository,
+    postRepository: PostRepository
 ) {
     val getTasksUseCase = GetTasksUseCase(taskRepository)
     val createTaskUseCase = CreateTaskUseCase(taskRepository)
@@ -27,13 +28,12 @@ fun Application.configureRouting(
     val getPostsUseCase = GetPostsUseCase(postRepository)
     val createPostUseCase = CreatePostUseCase(postRepository)
     val togglePostLikeUseCase = TogglePostLikeUseCase(postRepository)
-    routing {
-        // === ОТКРЫТЫЕ маршруты (не требуют авторизации) ===
-        authRoutes(userRepository)
 
-        // === ЗАЩИЩЁННЫЕ маршруты (требуют JWT токен) ===
+    routing {
+        authRoutes(authRepository)
+
         route("/") {
-            install(JwtAuth)  // ← Применяем middleware ко всем вложенным маршрутам
+            install(JwtAuth)
 
             taskRoutes(
                 getTasksUseCase,

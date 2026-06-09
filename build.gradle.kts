@@ -23,6 +23,7 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation-jvm:2.3.9")
     implementation("io.ktor:ktor-server-call-logging-jvm:2.3.9")
     implementation("io.ktor:ktor-server-cors-jvm:2.3.9")
+    implementation("io.ktor:ktor-server-status-pages-jvm:2.3.9")
 
     // === Ktor Client ===
     implementation("io.ktor:ktor-client-core-jvm:2.3.9")
@@ -44,6 +45,7 @@ dependencies {
 
     // === Logging ===
     implementation("ch.qos.logback:logback-classic:1.5.6")
+    implementation("org.mindrot:jbcrypt:0.4")
 
     // === Tests ===
     testImplementation(kotlin("test"))

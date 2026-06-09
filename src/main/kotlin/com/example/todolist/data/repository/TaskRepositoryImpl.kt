@@ -4,9 +4,15 @@ import com.example.todolist.data.db.DatabaseFactory
 import com.example.todolist.data.db.TasksTable
 import com.example.todolist.domain.model.Task
 import com.example.todolist.domain.repository.TaskRepository
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.update
 import java.time.LocalDateTime
+import java.time.format.DateTimeParseException
 import java.util.UUID
 
 class TaskRepositoryImpl : TaskRepository {
@@ -61,7 +67,7 @@ class TaskRepositoryImpl : TaskRepository {
                 it[this.title] = title
                 it[this.priority] = priority
                 it[this.isDone] = false
-                it[this.dueDate] = dueDate?.let { LocalDateTime.parse(it) }
+                it[this.dueDate] = dueDate?.let(::parseDueDate)
                 it[createdAt] = now
             }
         }
@@ -84,7 +90,7 @@ class TaskRepositoryImpl : TaskRepository {
                 title?.let { statement[TasksTable.title] = it }
                 isDone?.let { statement[TasksTable.isDone] = it }
                 priority?.let { statement[TasksTable.priority] = it }
-                dueDate?.let { statement[TasksTable.dueDate] = LocalDateTime.parse(it) }
+                dueDate?.let { statement[TasksTable.dueDate] = parseDueDate(it) }
             }
             updatedRows > 0
         }
@@ -96,6 +102,14 @@ class TaskRepositoryImpl : TaskRepository {
                 (TasksTable.id eq taskId) and (TasksTable.userId eq userId)
             }
             deletedRows > 0
+        }
+    }
+
+    private fun parseDueDate(value: String): LocalDateTime {
+        return try {
+            LocalDateTime.parse(value)
+        } catch (_: DateTimeParseException) {
+            throw IllegalArgumentException("Invalid dueDate format. Expected ISO_LOCAL_DATE_TIME")
         }
     }
 }
