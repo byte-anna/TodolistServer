@@ -19,6 +19,7 @@
 - `Ktor`
 - `PostgreSQL / Neon`
 - `Exposed`
+- `Flyway`
 - `HikariCP`
 - `JWT`
 - `H2` для тестов
@@ -106,6 +107,7 @@ docker run --rm -p 8080:8080 \
 - в `production/dev` сервер подключается к удалённой `PostgreSQL / Neon` БД
 - в тестах используется `H2` в режиме `PostgreSQL`
 - `DATABASE_URL` поддерживает как `jdbc:postgresql://...`, так и `postgres://...`
+- схема БД создаётся и поддерживается через `Flyway`-миграции из `src/main/resources/db/migration`
 
 ## Авторизация
 
