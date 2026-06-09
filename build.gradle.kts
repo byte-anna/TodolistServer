@@ -42,6 +42,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:0.48.0")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.48.0")
     implementation("org.jetbrains.exposed:exposed-java-time:0.48.0")
+    implementation("org.flywaydb:flyway-core:9.22.3")
 
     // === Logging ===
     implementation("ch.qos.logback:logback-classic:1.5.6")

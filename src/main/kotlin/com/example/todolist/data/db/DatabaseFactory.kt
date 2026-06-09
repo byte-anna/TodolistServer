@@ -2,8 +2,8 @@ package com.example.todolist.data.db
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object DatabaseFactory {
@@ -48,22 +48,24 @@ object DatabaseFactory {
             }
         )
 
+        runMigrations()
         Database.connect(dataSource)
-
-        transaction {
-            SchemaUtils.create(
-                UsersTable,
-                TasksTable,
-                PostsTable,
-                PostLikesTable,
-            )
-        }
     }
 
     fun <T> dbQuery(block: () -> T): T = transaction { block() }
+
     private fun requiredEnv(name: String): String {
         return System.getenv(name)
             ?: error("Environment variable $name is required for PostgreSQL connection")
+    }
+
+    private fun runMigrations() {
+        Flyway.configure()
+            .dataSource(dataSource)
+            .locations("classpath:db/migration")
+            .baselineOnMigrate(true)
+            .load()
+            .migrate()
     }
 
     private fun String.toJdbcPostgresUrl(): String {

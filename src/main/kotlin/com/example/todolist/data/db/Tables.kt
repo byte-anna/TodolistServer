@@ -10,7 +10,7 @@ object UsersTable : Table("users") {
     val id = varchar("id", 36)
     val email = varchar("email", 255).uniqueIndex()
     val displayName = varchar("display_name", 100).nullable()
-    val passwordHash = varchar("password_hash", 64)
+    val passwordHash = varchar("password_hash", 255)
     val salt = varchar("salt", 32)
     val createdAt = datetime("created_at")
 
