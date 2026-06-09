@@ -1,5 +1,6 @@
 package com.example.todolist.data.db
 
+import com.example.todolist.domain.model.TaskCategory
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
 import java.util.*
@@ -23,6 +24,7 @@ object TasksTable : Table("tasks") {
     val title = varchar("title", 255)
     val isDone = bool("is_done").default(false)
     val priority = integer("priority").default(1)
+    val category = enumerationByName("category", 20, TaskCategory::class).default(TaskCategory.NONE)
     val createdAt = datetime("created_at")
     val dueDate = datetime("due_date").nullable()
 

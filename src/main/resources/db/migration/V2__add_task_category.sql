@@ -1,0 +1,6 @@
+ALTER TABLE tasks
+ADD COLUMN category VARCHAR(20) NOT NULL DEFAULT 'NONE';
+
+UPDATE tasks
+SET category = 'NONE'
+WHERE category IS NULL;

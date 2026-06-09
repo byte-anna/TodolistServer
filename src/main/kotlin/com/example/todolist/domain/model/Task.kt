@@ -9,6 +9,7 @@ data class Task(
     val title: String,
     val isDone: Boolean,
     val priority: Int,
+    val category: TaskCategory = TaskCategory.NONE,
     val dueDate: String? = null,
     val createdAt: String? = null,
     val isShared: Boolean = false
