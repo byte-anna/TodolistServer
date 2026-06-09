@@ -46,25 +46,11 @@ fun Route.authRoutes(authRepository: AuthRepository) {
     post("/auth/login") {
         val request = call.receive<LoginRequest>()
 
-        val user = authRepository.findUserByEmail(request.email)
+        val user = authRepository.authenticate(request.email, request.password)
         if (user == null) {
             call.respond(
                 HttpStatusCode.Unauthorized,
-                ErrorResponse("Пользователь не найден")
-            )
-            return@post
-        }
-
-        val isValidPassword = authRepository.verifyPassword(
-            password = request.password,
-            passwordHash = user.passwordHash,
-            salt = user.salt
-        )
-
-        if (!isValidPassword) {
-            call.respond(
-                HttpStatusCode.Unauthorized,
-                ErrorResponse("Неверный пароль")
+                ErrorResponse("Неверный email или пароль")
             )
             return@post
         }

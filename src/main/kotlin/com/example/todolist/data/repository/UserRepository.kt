@@ -12,31 +12,11 @@ import java.util.UUID
 
 class UserRepository : AuthRepository {
 
-    override
-    fun verifyPassword(password: String, passwordHash: String, salt: String): Boolean {
-        return PasswordHasher.verifyPassword(password, passwordHash, salt)
+    override fun findUserByEmail(email: String): User? {
+        return findStoredUserByEmail(email)?.toPublicUser()
     }
 
-    override
-    fun findUserByEmail(email: String): User? {
-        val normalizedEmail = normalizeEmail(email)
-        val result = DatabaseFactory.dbQuery {
-            UsersTable.select { UsersTable.email eq normalizedEmail }.singleOrNull()
-        }
-        return result?.let { row ->
-            User(
-                id = row[UsersTable.id],
-                email = row[UsersTable.email],
-                displayName = row[UsersTable.displayName],
-                passwordHash = row[UsersTable.passwordHash],
-                salt = row[UsersTable.salt],
-                createdAt = row[UsersTable.createdAt].toString()
-            )
-        }
-    }
-
-    override
-    fun createUser(email: String, displayName: String?, password: String): User {
+    override fun createUser(email: String, displayName: String?, password: String): User {
         val userId = UUID.randomUUID().toString()
         val now = LocalDateTime.now()
         val normalizedEmail = normalizeEmail(email)
@@ -54,10 +34,62 @@ class UserRepository : AuthRepository {
             }
         }
 
-        return User(userId, normalizedEmail, displayName, passwordHash, salt, now.toString())
+        return User(
+            id = userId,
+            email = normalizedEmail,
+            displayName = displayName,
+            createdAt = now.toString()
+        )
+    }
+
+    override fun authenticate(email: String, password: String): User? {
+        val storedUser = findStoredUserByEmail(email) ?: return null
+        val isValid = PasswordHasher.verifyPassword(
+            password = password,
+            hashedPassword = storedUser.passwordHash,
+            salt = storedUser.salt
+        )
+
+        return if (isValid) storedUser.toPublicUser() else null
+    }
+
+    private fun findStoredUserByEmail(email: String): StoredUser? {
+        val normalizedEmail = normalizeEmail(email)
+        val result = DatabaseFactory.dbQuery {
+            UsersTable.select { UsersTable.email eq normalizedEmail }.singleOrNull()
+        }
+
+        return result?.let { row ->
+            StoredUser(
+                id = row[UsersTable.id],
+                email = row[UsersTable.email],
+                displayName = row[UsersTable.displayName],
+                passwordHash = row[UsersTable.passwordHash],
+                salt = row[UsersTable.salt],
+                createdAt = row[UsersTable.createdAt].toString()
+            )
+        }
     }
 
     private fun normalizeEmail(email: String): String {
         return email.trim().lowercase()
+    }
+
+    private data class StoredUser(
+        val id: String,
+        val email: String,
+        val displayName: String?,
+        val passwordHash: String,
+        val salt: String,
+        val createdAt: String
+    ) {
+        fun toPublicUser(): User {
+            return User(
+                id = id,
+                email = email,
+                displayName = displayName,
+                createdAt = createdAt
+            )
+        }
     }
 }

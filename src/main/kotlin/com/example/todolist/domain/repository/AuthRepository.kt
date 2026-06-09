@@ -5,5 +5,5 @@ import com.example.todolist.domain.model.User
 interface AuthRepository {
     fun findUserByEmail(email: String): User?
     fun createUser(email: String, displayName: String?, password: String): User
-    fun verifyPassword(password: String, passwordHash: String, salt: String): Boolean
+    fun authenticate(email: String, password: String): User?
 }

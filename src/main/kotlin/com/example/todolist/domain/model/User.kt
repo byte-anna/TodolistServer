@@ -7,7 +7,5 @@ data class User(
     val id: String,
     val email: String,
     val displayName: String?,
-    val passwordHash: String,
-    val salt: String,
     val createdAt: String
 )
