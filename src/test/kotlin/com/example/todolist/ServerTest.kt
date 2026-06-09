@@ -188,6 +188,57 @@ class ServerTest {
     }
 
     @Test
+    fun `POST tasks should preserve priority scale values 1 2 3`() = testApplication {
+        application { module() }
+        val client = jsonClient()
+
+        val auth = registerAndLogin(client, "task_priority_scale_${System.currentTimeMillis()}@mail.com")
+
+        val lowTask = client.post("/tasks") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(CreateTaskRequest("Low", priority = 1))
+        }.body<Task>()
+
+        val mediumTask = client.post("/tasks") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(CreateTaskRequest("Medium", priority = 2))
+        }.body<Task>()
+
+        val highTask = client.post("/tasks") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(CreateTaskRequest("High", priority = 3))
+        }.body<Task>()
+
+        assertEquals(1, lowTask.priority)
+        assertEquals(2, mediumTask.priority)
+        assertEquals(3, highTask.priority)
+    }
+
+    @Test
+    fun `POST tasks with priority above supported scale should return detailed 400`() = testApplication {
+        application { module() }
+        val client = jsonClient()
+
+        val auth = registerAndLogin(client, "task_priority_high_${System.currentTimeMillis()}@mail.com")
+
+        val response = client.post("/tasks") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(CreateTaskRequest("Unsupported priority", priority = 4))
+        }
+
+        assertEquals(HttpStatusCode.BadRequest, response.status)
+        val error = response.body<ErrorResponse>()
+        assertEquals(
+            "Priority must be in range 1..3 where 1=LOW, 2=MEDIUM, 3=HIGH",
+            error.error
+        )
+    }
+
+    @Test
     fun `GET tasks should return user tasks`() = testApplication {
         application { module() }
         val client = jsonClient()
@@ -349,6 +400,62 @@ class ServerTest {
 
         val updatedTask = tasks.first { it.id == createdTask.id }
         assertEquals(TaskCategory.STUDY, updatedTask.category)
+    }
+
+    @Test
+    fun `PUT tasks should update priority within fixed scale`() = testApplication {
+        application { module() }
+        val client = jsonClient()
+
+        val auth = registerAndLogin(client, "task_update_priority_${System.currentTimeMillis()}@mail.com")
+
+        val createdTask = client.post("/tasks") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(CreateTaskRequest("Task to update priority", priority = 1))
+        }.body<Task>()
+
+        val updateResponse = client.put("/tasks/${createdTask.id}") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(UpdateTaskRequest(priority = 3))
+        }
+
+        assertEquals(HttpStatusCode.OK, updateResponse.status)
+
+        val tasks = client.get("/tasks") {
+            bearerAuth(auth.token!!)
+        }.body<List<Task>>()
+
+        val updatedTask = tasks.first { it.id == createdTask.id }
+        assertEquals(3, updatedTask.priority)
+    }
+
+    @Test
+    fun `PUT tasks with priority above supported scale should return detailed 400`() = testApplication {
+        application { module() }
+        val client = jsonClient()
+
+        val auth = registerAndLogin(client, "task_update_priority_bad_${System.currentTimeMillis()}@mail.com")
+
+        val createdTask = client.post("/tasks") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(CreateTaskRequest("Task with invalid update priority"))
+        }.body<Task>()
+
+        val response = client.put("/tasks/${createdTask.id}") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(UpdateTaskRequest(priority = 5))
+        }
+
+        assertEquals(HttpStatusCode.BadRequest, response.status)
+        val error = response.body<ErrorResponse>()
+        assertEquals(
+            "Priority must be in range 1..3 where 1=LOW, 2=MEDIUM, 3=HIGH",
+            error.error
+        )
     }
 
     @Test

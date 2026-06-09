@@ -16,6 +16,10 @@ import io.ktor.server.routing.put
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
 
+private const val MIN_TASK_PRIORITY = 1
+private const val MAX_TASK_PRIORITY = 3
+private const val TASK_PRIORITY_ERROR_MESSAGE = "Priority must be in range 1..3 where 1=LOW, 2=MEDIUM, 3=HIGH"
+
 fun Route.taskRoutes(
     getTasksUseCase: GetTasksUseCase,
     createTaskUseCase: CreateTaskUseCase,
@@ -42,10 +46,10 @@ fun Route.taskRoutes(
             return@post
         }
 
-        if (request.priority < 1) {
+        if (!request.priority.isValidTaskPriority()) {
             call.respond(
                 HttpStatusCode.BadRequest,
-                ErrorResponse("Priority must be greater than 0")
+                ErrorResponse(TASK_PRIORITY_ERROR_MESSAGE)
             )
             return@post
         }
@@ -83,10 +87,10 @@ fun Route.taskRoutes(
         val userId = call.requireAuthenticatedUserId() ?: return@put
         val request = call.receive<UpdateTaskRequest>()
 
-        if (request.priority != null && request.priority < 1) {
+        if (request.priority != null && !request.priority.isValidTaskPriority()) {
             call.respond(
                 HttpStatusCode.BadRequest,
-                ErrorResponse("Priority must be greater than 0")
+                ErrorResponse(TASK_PRIORITY_ERROR_MESSAGE)
             )
             return@put
         }
@@ -112,3 +116,5 @@ private fun parseTaskDateFilter(value: String): LocalDate {
         throw IllegalArgumentException("Invalid date format. Expected ISO_LOCAL_DATE like 2026-06-09")
     }
 }
+
+private fun Int.isValidTaskPriority(): Boolean = this in MIN_TASK_PRIORITY..MAX_TASK_PRIORITY
