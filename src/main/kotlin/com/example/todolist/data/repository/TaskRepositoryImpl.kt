@@ -13,10 +13,13 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.update
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.UUID
 
 class TaskRepositoryImpl : TaskRepository {
+
+    private val dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
     override suspend fun getTasks(userId: String): List<Task> {
         return DatabaseFactory.dbQuery {
@@ -30,7 +33,7 @@ class TaskRepositoryImpl : TaskRepository {
                         isDone = row[TasksTable.isDone],
                         priority = row[TasksTable.priority],
                         category = row[TasksTable.category],
-                        dueDate = row[TasksTable.dueDate]?.toString(),
+                        dueDate = row[TasksTable.dueDate]?.format(dateTimeFormatter),
                         createdAt = row[TasksTable.createdAt].toString()
                     )
                 }
@@ -48,7 +51,7 @@ class TaskRepositoryImpl : TaskRepository {
                     isDone = row[TasksTable.isDone],
                     priority = row[TasksTable.priority],
                     category = row[TasksTable.category],
-                    dueDate = row[TasksTable.dueDate]?.toString(),
+                    dueDate = row[TasksTable.dueDate]?.format(dateTimeFormatter),
                     createdAt = row[TasksTable.createdAt].toString()
                 )
             }
@@ -77,7 +80,16 @@ class TaskRepositoryImpl : TaskRepository {
             }
         }
 
-        return Task(taskId, userId, title, false, priority, category, dueDate, now.toString())
+        return Task(
+            id = taskId,
+            userId = userId,
+            title = title,
+            isDone = false,
+            priority = priority,
+            category = category,
+            dueDate = dueDate?.let(::parseDueDate)?.format(dateTimeFormatter),
+            createdAt = now.toString()
+        )
     }
 
     override suspend fun updateTask(
@@ -114,9 +126,11 @@ class TaskRepositoryImpl : TaskRepository {
 
     private fun parseDueDate(value: String): LocalDateTime {
         return try {
-            LocalDateTime.parse(value)
+            LocalDateTime.parse(value, dateTimeFormatter)
         } catch (_: DateTimeParseException) {
-            throw IllegalArgumentException("Invalid dueDate format. Expected ISO_LOCAL_DATE_TIME")
+            throw IllegalArgumentException(
+                "Invalid dueDate format. Expected ISO_LOCAL_DATE_TIME like 2026-06-09T14:30:00"
+            )
         }
     }
 }

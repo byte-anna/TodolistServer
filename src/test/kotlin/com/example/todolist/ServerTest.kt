@@ -6,6 +6,7 @@ import com.example.todolist.domain.model.TaskCategory
 import com.example.todolist.plugins.AuthResponse
 import com.example.todolist.plugins.CreatePostRequest
 import com.example.todolist.plugins.CreateTaskRequest
+import com.example.todolist.plugins.ErrorResponse
 import com.example.todolist.plugins.LoginRequest
 import com.example.todolist.plugins.RegisterRequest
 import com.example.todolist.plugins.UpdateTaskRequest
@@ -232,6 +233,25 @@ class ServerTest {
     }
 
     @Test
+    fun `POST tasks should return dueDate in ISO local date time format`() = testApplication {
+        application { module() }
+        val client = jsonClient()
+
+        val auth = registerAndLogin(client, "task_due_date_${System.currentTimeMillis()}@mail.com")
+        val dueDate = "2026-06-09T14:30:00"
+
+        val response = client.post("/tasks") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(CreateTaskRequest("Task with due date", dueDate = dueDate))
+        }
+
+        assertEquals(HttpStatusCode.Created, response.status)
+        val task = response.body<Task>()
+        assertEquals(dueDate, task.dueDate)
+    }
+
+    @Test
     fun `POST tasks without category should keep backward compatibility`() = testApplication {
         application { module() }
         val client = jsonClient()
@@ -302,6 +322,38 @@ class ServerTest {
         }
 
         assertEquals(HttpStatusCode.BadRequest, response.status)
+        val error = response.body<ErrorResponse>()
+        assertEquals(
+            "Invalid dueDate format. Expected ISO_LOCAL_DATE_TIME like 2026-06-09T14:30:00",
+            error.error
+        )
+    }
+
+    @Test
+    fun `PUT tasks with invalid dueDate should return detailed 400`() = testApplication {
+        application { module() }
+        val client = jsonClient()
+
+        val auth = registerAndLogin(client, "invalid_due_update_${System.currentTimeMillis()}@mail.com")
+
+        val createdTask = client.post("/tasks") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(CreateTaskRequest("Task to update due date"))
+        }.body<Task>()
+
+        val response = client.put("/tasks/${createdTask.id}") {
+            bearerAuth(auth.token!!)
+            contentType(ContentType.Application.Json)
+            setBody(UpdateTaskRequest(dueDate = "09.06.2026 14:30"))
+        }
+
+        assertEquals(HttpStatusCode.BadRequest, response.status)
+        val error = response.body<ErrorResponse>()
+        assertEquals(
+            "Invalid dueDate format. Expected ISO_LOCAL_DATE_TIME like 2026-06-09T14:30:00",
+            error.error
+        )
     }
 
     @Test
